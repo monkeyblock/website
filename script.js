@@ -1,217 +1,112 @@
 // Monkey Block Landing Page JavaScript
 
-// =====================================================================================
-// ANALYTICS & CONVERSION TRACKING
-// =====================================================================================
-
-// Track referrer sources for attribution
-function trackReferrerSource() {
-    const referrer = document.referrer;
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Detect traffic source
-    let source = 'direct';
-    let medium = 'none';
-    let campaign = 'none';
-    
-    if (urlParams.get('utm_source')) {
-        source = urlParams.get('utm_source');
-        medium = urlParams.get('utm_medium') || 'unknown';
-        campaign = urlParams.get('utm_campaign') || 'unknown';
-    } else if (referrer) {
-        if (referrer.includes('google.com')) {
-            source = 'google';
-            medium = 'organic';
-        } else if (referrer.includes('reddit.com')) {
-            source = 'reddit';
-            medium = 'social';
-        } else if (referrer.includes('twitter.com') || referrer.includes('x.com')) {
-            source = 'twitter';
-            medium = 'social';
-        } else if (referrer.includes('facebook.com')) {
-            source = 'facebook'; 
-            medium = 'social';
-        } else if (referrer.includes('youtube.com')) {
-            source = 'youtube';
-            medium = 'video';
-        } else {
-            source = 'referral';
-            medium = 'referral';
-        }
-    }
-    
-    // Send page view with source attribution
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'page_view', {
-            'source': source,
-            'medium': medium,
-            'campaign': campaign,
-            'referrer': referrer,
-            'page_title': document.title,
-            'page_location': window.location.href
-        });
-        
-        console.log('📊 Page view tracked:', { source, medium, campaign, referrer });
-    }
-    
-    // Store source data for download attribution
-    const sourceData = {
-        source: source,
-        medium: medium,
-        campaign: campaign,
-        referrer: referrer,
-        landingTime: Date.now()
-    };
-    
-    try {
-        sessionStorage.setItem('monkey_block_source', JSON.stringify(sourceData));
-    } catch (e) {
-        console.warn('Could not store source data:', e);
-    }
-}
-
-// Track Chrome Web Store download clicks
-function trackDownloadClick(buttonElement, buttonLocation) {
-    // Generate unique session ID
-    const timestamp = Date.now();
-    const sessionId = `web_${timestamp}_${Math.random().toString(36).substr(2, 9)}`;
-    
-    // Get source attribution from session
-    let sourceData = { source: 'direct', medium: 'none', campaign: 'none' };
-    try {
-        const storedData = sessionStorage.getItem('monkey_block_source');
-        if (storedData) {
-            sourceData = JSON.parse(storedData);
-        }
-    } catch (e) {
-        console.warn('Could not retrieve source data:', e);
-    }
-    
-    console.log('🎯 Download button clicked:', buttonLocation, 'Session:', sessionId);
-    
-    // Send download event with full attribution
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'chrome_store_click', {
-            'event_category': 'Extension',
-            'event_label': buttonLocation,
-            'session_id': sessionId,
-            'button_location': buttonLocation,
-            'source': sourceData.source,
-            'medium': sourceData.medium,
-            'campaign': sourceData.campaign,
-            'referrer': sourceData.referrer,
-            'time_on_page': Date.now() - (sourceData.landingTime || Date.now()),
-            'value': 1
-        });
-        
-        console.log('✅ Download analytics sent with attribution');
-    }
-    
-    // Store session for extension pickup
-    try {
-        localStorage.setItem('monkey_block_download_session', sessionId);
-        
-        // Also store extended attribution data
-        const extendedSession = {
-            sessionId: sessionId,
-            buttonLocation: buttonLocation,
-            timestamp: new Date().toISOString(),
-            source: sourceData.source,
-            medium: sourceData.medium,
-            campaign: sourceData.campaign,
-            referrer: sourceData.referrer,
-            userAgent: navigator.userAgent,
-            timeOnPage: Date.now() - (sourceData.landingTime || Date.now())
-        };
-        
-        localStorage.setItem('monkey_block_attribution', JSON.stringify(extendedSession));
-        console.log('✅ Attribution data stored for extension pickup');
-    } catch (e) {
-        console.error('❌ Failed to store session data:', e);
-    }
-}
-
-// Initialize analytics on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Track initial page view with referrer attribution
-    trackReferrerSource();
-    
-    // Add click tracking to all Chrome Web Store links
-    const downloadButtons = document.querySelectorAll('a[href*="chromewebstore.google.com"], a[href*="chrome.google.com/webstore"]');
-    
-    downloadButtons.forEach((button, index) => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Determine button location
-            let buttonLocation = 'unknown';
-            if (button.closest('nav')) {
-                buttonLocation = 'navigation';
-            } else if (button.closest('.hero')) {
-                buttonLocation = button.classList.contains('cta-primary') ? 'hero_primary' : 'hero_secondary';
-            } else if (button.closest('.features')) {
-                buttonLocation = 'features_section';
-            } else if (button.closest('.benefits')) {
-                buttonLocation = 'benefits_section';
-            } else {
-                buttonLocation = `button_${index + 1}`;
-            }
-            
-            // Track the click
-            trackDownloadClick(button, buttonLocation);
-            
-            // Small delay to ensure analytics is sent, then navigate
-            setTimeout(() => {
-                window.open(button.href, '_blank');
-            }, 150);
-        });
-    });
-    
-    console.log('✅ Analytics tracking initialized for', downloadButtons.length, 'download buttons');
-});
-
-// Track scroll engagement
-let maxScrollTracked = 0;
-window.addEventListener('scroll', function() {
-    const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-    
-    if (scrollPercent >= 25 && maxScrollTracked < 25) {
-        maxScrollTracked = 25;
-        gtag('event', 'scroll_depth', {
-            'event_category': 'Engagement',
-            'event_label': '25%',
-            'value': 25
-        });
-    } else if (scrollPercent >= 50 && maxScrollTracked < 50) {
-        maxScrollTracked = 50;
-        gtag('event', 'scroll_depth', {
-            'event_category': 'Engagement',
-            'event_label': '50%',
-            'value': 50
-        });
-    } else if (scrollPercent >= 75 && maxScrollTracked < 75) {
-        maxScrollTracked = 75;
-        gtag('event', 'scroll_depth', {
-            'event_category': 'Engagement',
-            'event_label': '75%',
-            'value': 75
-        });
-    } else if (scrollPercent >= 100 && maxScrollTracked < 100) {
-        maxScrollTracked = 100;
-        gtag('event', 'scroll_depth', {
-            'event_category': 'Engagement',
-            'event_label': '100%',
-            'value': 100
-        });
-    }
-});
-
-// =====================================================================================
-// EXISTING TIMER ANIMATION CODE
-// =====================================================================================
-
 // Set current year
 document.getElementById('year').textContent = new Date().getFullYear();
+
+// Analytics Helper Functions
+function trackEvent(eventName, properties = {}) {
+    // Umami Analytics
+    if (typeof umami !== 'undefined') {
+        umami.track(eventName, properties);
+    }
+    
+    // Clicky Analytics
+    if (typeof clicky !== 'undefined') {
+        clicky.goal(eventName);
+    }
+    
+    // Plausible Analytics - using custom event goals
+    if (typeof plausible !== 'undefined') {
+        plausible(eventName, { props: properties });
+    }
+}
+
+// Track page views for sections (for single-page navigation)
+function trackSectionView(sectionName) {
+    trackEvent('section-view', { section: sectionName });
+}
+
+// Track Install Button Clicks
+document.querySelectorAll('a[href*="chromewebstore.google.com"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+        const buttonLocation = this.classList.contains('install-btn') ? 'navigation' : 
+                             this.classList.contains('cta-primary') ? 'hero-primary' :
+                             this.classList.contains('cta-button') ? 'bottom-cta' : 'other';
+        
+        trackEvent('install-button-click', { 
+            location: buttonLocation,
+            text: this.textContent.trim()
+        });
+    });
+});
+
+// Track FAQ Interactions
+document.querySelectorAll('.faq-item').forEach((item, index) => {
+    item.addEventListener('toggle', function() {
+        if (this.open) {
+            trackEvent('faq-opened', { 
+                question: this.querySelector('summary').textContent,
+                index: index + 1
+            });
+        }
+    });
+});
+
+// Track navigation clicks
+document.querySelectorAll('.nav-links a:not(.install-btn)').forEach(link => {
+    link.addEventListener('click', function() {
+        const section = this.getAttribute('href').replace('#', '');
+        trackEvent('nav-click', { section: section });
+    });
+});
+
+// Track CTA button clicks
+document.querySelector('.cta-secondary').addEventListener('click', function() {
+    trackEvent('see-how-it-works-click');
+});
+
+// Track timer preview interactions
+let timerInteracted = false;
+document.getElementById('demo-timer').addEventListener('mouseover', function() {
+    if (!timerInteracted) {
+        timerInteracted = true;
+        trackEvent('timer-preview-hover');
+    }
+});
+
+// Track scroll depth
+let scrollDepths = [25, 50, 75, 90];
+let reachedDepths = [];
+
+window.addEventListener('scroll', function() {
+    const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    
+    scrollDepths.forEach(depth => {
+        if (scrollPercent >= depth && !reachedDepths.includes(depth)) {
+            reachedDepths.push(depth);
+            trackEvent('scroll-depth', { depth: depth + '%' });
+        }
+    });
+});
+
+// Track time on page
+let startTime = Date.now();
+let timeTracked = false;
+
+window.addEventListener('beforeunload', function() {
+    if (!timeTracked) {
+        const timeOnPage = Math.round((Date.now() - startTime) / 1000);
+        trackEvent('time-on-page', { seconds: timeOnPage });
+        timeTracked = true;
+    }
+});
+
+// Also track after 30 seconds
+setTimeout(() => {
+    if (!timeTracked) {
+        trackEvent('engaged-user', { milestone: '30-seconds' });
+    }
+}, 30000);
 
 // Animate timer
 const timerDisplay = document.querySelector('.timer-display');
@@ -265,4 +160,20 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             });
         }
     });
+});
+
+// Track if user comes from Chrome Web Store
+if (document.referrer.includes('chrome.google.com/webstore')) {
+    trackEvent('visitor-from-chrome-store');
+}
+
+// Track page performance
+window.addEventListener('load', function() {
+    // Wait for everything to load
+    setTimeout(() => {
+        if (window.performance && window.performance.timing) {
+            const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+            trackEvent('page-load-time', { milliseconds: loadTime });
+        }
+    }, 0);
 });
