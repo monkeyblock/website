@@ -6,6 +6,8 @@
     <title>Contact Us - Monkey Block</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         .contact-container {
             max-width: 850px;
@@ -210,6 +212,17 @@
         .required {
             color: var(--danger-color);
         }
+        
+        .cf-turnstile {
+            margin-bottom: 1.5rem;
+        }
+        
+        .captcha-error {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 0.5rem;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -231,7 +244,8 @@
                 </div>
                 
                 <form id="contactForm">
-                    <input type="hidden" name="access_key" value="4fe49b14-dafe-4c1f-9af6-c7e3f5f28f32">
+                    <!-- Web3Forms Access Key -->
+                    <input type="hidden" name="access_key" value="533613f5-b3b1-4ca4-9240-dda0a4087686">
                     <input type="hidden" name="subject" value="New Contact Form Submission - Monkey Block">
                     <input type="hidden" name="from_name" value="Monkey Block Contact Form">
                     
@@ -261,6 +275,18 @@
                     <div class="form-group">
                         <label for="message">Your Message <span class="required">*</span></label>
                         <textarea id="message" name="message" required placeholder="Tell us what's on your mind..."></textarea>
+                    </div>
+                    
+                    <!-- Cloudflare Turnstile Captcha -->
+                    <div class="cf-turnstile" 
+                         data-sitekey="0x4AAAAAABqTXO2dEhsajUWe" 
+                         data-callback="onTurnstileSuccess"
+                         data-error-callback="onTurnstileError"
+                         data-expired-callback="onTurnstileExpired"
+                         data-theme="light">
+                    </div>
+                    <div class="captcha-error" id="captchaError">
+                        Please complete the captcha verification
                     </div>
                     
                     <button type="submit" class="submit-btn" id="submitBtn">
@@ -303,6 +329,26 @@
         // Set current year
         document.getElementById('year').textContent = new Date().getFullYear();
         
+        // Turnstile callback functions
+        let turnstileToken = null;
+        
+        function onTurnstileSuccess(token) {
+            turnstileToken = token;
+            document.getElementById('captchaError').style.display = 'none';
+        }
+        
+        function onTurnstileError() {
+            turnstileToken = null;
+            document.getElementById('captchaError').style.display = 'block';
+            document.getElementById('captchaError').textContent = 'Captcha verification failed. Please try again.';
+        }
+        
+        function onTurnstileExpired() {
+            turnstileToken = null;
+            document.getElementById('captchaError').style.display = 'block';
+            document.getElementById('captchaError').textContent = 'Captcha expired. Please verify again.';
+        }
+        
         // Handle form submission
         document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -310,10 +356,19 @@
             const submitBtn = document.getElementById('submitBtn');
             const successMsg = document.getElementById('successMessage');
             const errorMsg = document.getElementById('errorMessage');
+            const captchaError = document.getElementById('captchaError');
             
             // Reset messages
             successMsg.style.display = 'none';
             errorMsg.style.display = 'none';
+            captchaError.style.display = 'none';
+            
+            // Check if captcha is completed
+            if (!turnstileToken) {
+                captchaError.style.display = 'block';
+                captchaError.textContent = 'Please complete the captcha verification';
+                return;
+            }
             
             // Disable submit button
             submitBtn.disabled = true;
@@ -321,6 +376,10 @@
             
             // Prepare form data
             const formData = new FormData(this);
+            
+            // Add the Turnstile token to the form data
+            formData.append('cf-turnstile-response', turnstileToken);
+            
             const object = {};
             formData.forEach((value, key) => {
                 object[key] = value;
@@ -343,15 +402,27 @@
                     successMsg.style.display = 'block';
                     // Reset form
                     this.reset();
+                    // Reset Turnstile
+                    turnstileToken = null;
+                    if (window.turnstile) {
+                        window.turnstile.reset();
+                    }
                     // Scroll to top
                     successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 } else {
-                    throw new Error('Form submission failed');
+                    throw new Error(data.message || 'Form submission failed');
                 }
             } catch (error) {
                 console.error('Error:', error);
                 errorMsg.style.display = 'block';
+                errorMsg.textContent = error.message || 'Oops! Something went wrong. Please try again.';
                 errorMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+                // Reset Turnstile on error
+                if (window.turnstile) {
+                    window.turnstile.reset();
+                }
+                turnstileToken = null;
             } finally {
                 // Re-enable submit button
                 submitBtn.disabled = false;
