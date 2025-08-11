@@ -6,7 +6,33 @@
 class WelcomePage {
   constructor() {
     this.extensionId = 'ggccjkdgmlclpigflghjjkgeblgdgffe'; // MonkeyBlock Extension ID
+    this.apiKey = 'ad0a670d36f60cd419802ccfb5252139';
+    this.serverUrl = 'https://api.eu.amplitude.com';
+    this.initAmplitude();
     this.initPage();
+  }
+  
+  initAmplitude() {
+    // Initialize Amplitude if available
+    if (typeof amplitude !== 'undefined') {
+      // Get or create user ID
+      const userId = localStorage.getItem('mb_user_id') || 
+                     `user_welcome_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      if (!localStorage.getItem('mb_user_id')) {
+        localStorage.setItem('mb_user_id', userId);
+      }
+      
+      amplitude.init(this.apiKey, userId, {
+        serverUrl: this.serverUrl,
+        includeReferrer: true,
+        includeUtm: true
+      });
+      
+      console.log('[Welcome] Amplitude initialized with user:', userId);
+    } else {
+      console.warn('[Welcome] Amplitude SDK not available');
+    }
   }
   
   getExtensionId() {

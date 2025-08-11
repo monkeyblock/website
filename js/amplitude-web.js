@@ -199,7 +199,10 @@ class MonkeyBlockWebTracker {
   setupEventListeners() {
     // Track install button clicks
     document.querySelectorAll('[data-track="install"]').forEach(button => {
-      button.addEventListener('click', () => this.handleInstallClick(button));
+      button.addEventListener('click', (e) => {
+        // Don't prevent default - let the link work normally
+        this.handleInstallClick(button);
+      });
     });
     
     // Track scroll depth
@@ -242,12 +245,6 @@ class MonkeyBlockWebTracker {
     } catch (e) {
       console.warn('[MB Tracker] Could not store install intent:', e);
     }
-    
-    // Generate Chrome Store URL with GA parameters
-    const chromeStoreUrl = this.buildChromeStoreUrl(utm);
-    
-    // Open in new tab
-    window.open(chromeStoreUrl, '_blank');
     
     console.log('[MB Tracker] Install click tracked:', buttonLocation);
   }
