@@ -1,6 +1,7 @@
 /**
  * MonkeyBlock Website Analytics
- * Simplified tracking using modern Amplitude SDK
+ * Using Amplitude Browser SDK v2
+ * Documentation: https://amplitude.com/docs/sdks/analytics/browser/browser-sdk-2
  */
 
 class MonkeyBlockWebTracker {
@@ -20,15 +21,16 @@ class MonkeyBlockWebTracker {
   
   initializeWhenReady() {
     // Check if Amplitude SDK is already loaded
-    if (window.amplitude && window.amplitude.track) {
+    if (typeof window.amplitude !== 'undefined') {
       this.initAmplitude();
     } else {
       // Wait and retry
       setTimeout(() => this.initializeWhenReady(), 500);
     }
   }
-  
-  getOrCreateUserId() {    // Check storage for existing user ID
+    
+  getOrCreateUserId() {
+    // Check storage for existing user ID
     let userId = localStorage.getItem('mb_user_id');
     
     if (!userId) {
@@ -54,11 +56,12 @@ class MonkeyBlockWebTracker {
       memory: navigator.deviceMemory || 'unknown',
       pixelRatio: window.devicePixelRatio || 1
     };
-    
-    // Simple hash function    const raw = JSON.stringify(components);
+        
+    // Simple hash function - FIX: raw variable name
+    const rawString = JSON.stringify(components);
     let hash = 0;
-    for (let i = 0; i < raw.length; i++) {
-      const char = raw.charCodeAt(i);
+    for (let i = 0; i < rawString.length; i++) {
+      const char = rawString.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
@@ -72,32 +75,49 @@ class MonkeyBlockWebTracker {
     if (this.initialized) return;
     
     try {
-      // Use modern Amplitude SDK initialization
-      window.amplitude.init(this.apiKey, {
+      // Create Amplitude instance using Browser SDK v2
+      // Based on: https://amplitude.com/docs/sdks/analytics/browser/browser-sdk-2
+      const amplitudeInstance = window.amplitude.createInstance();
+      
+      // Initialize with configuration
+      amplitudeInstance.init(this.apiKey, {
         userId: this.userId,
         deviceId: this.deviceId,
-        serverUrl: this.serverUrl,
-        defaultTracking: {
+        serverUrl: this.serverUrl,        defaultTracking: {
           sessions: true,
           pageViews: true,
-          formInteractions: true,
+          formInteractions: false,
           fileDownloads: false
-        }
+        },
+        flushIntervalMillis: 1000,
+        flushQueueSize: 30,
+        flushMaxRetries: 5,
+        logLevel: window.location.hostname === 'localhost' ? 'Verbose' : 'None',
+        minIdLength: 5,
+        saveEvents: true,
+        optOut: false,
+        serverZone: 'EU',
+        useBatch: true
+      }).promise.then(() => {
+        console.log('[MB Tracker] ✅ Amplitude initialized successfully');
+        this.initialized = true;
+        
+        // Set user properties
+        amplitudeInstance.setUserProperties({
+          source_platform: 'website',
+          landing_fingerprint: this.deviceId,
+          initial_landing: new Date().toISOString()
+        });
+        
+        // Store instance for later use
+        this.amplitude = amplitudeInstance;
+                
+        // Track initial landing
+        this.trackLandingVisit();
+        this.setupEventListeners();
+      }).catch((error) => {
+        console.error('[MB Tracker] Failed to initialize:', error);
       });
-            
-      // Set user properties
-      window.amplitude.setUserProperties({
-        source_platform: 'website',
-        landing_fingerprint: this.deviceId,
-        initial_landing: new Date().toISOString()
-      });
-      
-      this.initialized = true;
-      console.log('[MB Tracker] ✅ Amplitude initialized successfully');
-      
-      // Track initial landing
-      this.trackLandingVisit();
-      this.setupEventListeners();
       
     } catch (error) {
       console.error('[MB Tracker] Failed to initialize Amplitude:', error);
@@ -105,21 +125,22 @@ class MonkeyBlockWebTracker {
   }
   
   trackLandingVisit() {
+    if (!this.amplitude) return;
+    
     const utm = this.getUTMParameters();
     
-    window.amplitude.track('Landing Page Visit', {
+    this.amplitude.track('Landing Page Visit', {
       ...utm,
       page_url: window.location.href,
       page_title: document.title,
       referrer: document.referrer,
       fingerprint: this.deviceId
     });
-        
+    
     console.log('[MB Tracker] Landing visit tracked');
   }
   
-  getUTMParameters() {
-    const params = new URLSearchParams(window.location.search);
+  getUTMParameters() {    const params = new URLSearchParams(window.location.search);
     return {
       utm_source: params.get('utm_source') || 'direct',
       utm_medium: params.get('utm_medium') || 'none',
@@ -142,10 +163,12 @@ class MonkeyBlockWebTracker {
   }
   
   trackInstallClick(button) {
-    const buttonText = button.textContent || 'Unknown';    const buttonLocation = button.dataset.location || 'unknown';
+    if (!this.amplitude) return;
     
-    window.amplitude.track('Install Button Clicked', {
-      button_text: buttonText,
+    const buttonText = button.textContent || 'Unknown';
+    const buttonLocation = button.dataset.location || 'unknown';
+    
+    this.amplitude.track('Install Button Clicked', {      button_text: buttonText,
       button_location: buttonLocation,
       page_section: this.getCurrentSection()
     });
@@ -159,6 +182,8 @@ class MonkeyBlockWebTracker {
     
     const updateScrollDepth = () => {
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight <= 0) return;
+      
       const scrolled = window.scrollY;
       const scrollDepth = Math.round((scrolled / scrollHeight) * 100);
       
@@ -166,13 +191,13 @@ class MonkeyBlockWebTracker {
         this.maxScrollDepth = scrollDepth;
         
         // Track milestone scroll depths
-        if ([25, 50, 75, 100].includes(scrollDepth)) {
-          window.amplitude.track('Scroll Depth Reached', {
+        if ([25, 50, 75, 100].includes(scrollDepth) && this.amplitude) {
+          this.amplitude.track('Scroll Depth Reached', {
             depth: scrollDepth
           });
-        }      }
-      
-      ticking = false;
+        }
+      }
+            ticking = false;
     };
     
     window.addEventListener('scroll', () => {
@@ -198,6 +223,14 @@ class MonkeyBlockWebTracker {
     }
     
     return 'unknown';
+  }
+  
+  // Public method for manual event tracking
+  track(eventName, eventProperties) {    if (this.amplitude) {
+      this.amplitude.track(eventName, eventProperties);
+      return true;
+    }
+    return false;
   }
 }
 
