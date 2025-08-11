@@ -70,6 +70,38 @@
     !function(){"use strict";!function(e,t){var r=e.amplitude||{_q:[],_iq:{}};if(r.invoked)e.console&&console.error&&console.error("Amplitude snippet has been loaded.");else{r.invoked=!0;var n=function(e,t){e.prototype[t]=function(){return this._q.push({name:t,args:Array.prototype.slice.call(arguments,0)}),this}},s=function(e,t,r){return function(n){e._q.push({name:t,args:Array.prototype.slice.call(r,0),resolve:n})}},o=function(e,t,r){e[t]=function(){if(r)return{promise:new Promise(s(e,t,Array.prototype.slice.call(arguments)))}}},i=function(e){for(var t=0;t<y.length;t++)o(e,y[t],!1);for(var r=0;r<g.length;r++)o(e,g[r],!0)};r.getInstance=function(e){return e=(e&&0!==e.length?e:"$default_instance").toLowerCase(),Object.prototype.hasOwnProperty.call(r._iq,e)||(r._iq[e]={_q:[]},i(r._iq[e])),r._iq[e]},e.amplitude=r;for(var a=function(e){var t=r[e];return function(){return t.apply(r,arguments)}},c=["init","setOptOut","setDeviceId","setUserId","setSessionId","setUserProperties","clearUserProperties","setGroup","setRevenueProperties","logRevenueV2","revenue","setAmplitudeId","regenerateDeviceId","groupIdentify","onInit","onNewSessionStart","logEventWithTimestamp","logEventWithGroups","setSessionId","resetSessionId","getDeviceId","getUserId","setMinTimeBetweenSessionsMillis","setEventUploadThreshold","setUseDynamicConfig","setServerZone","setServerUrl","sendEvents","setLibrary","setTransport"],u=0;u<c.length;u++)n(r,c[u]);r.Identify=t.Identify,r.Revenue=t.Revenue;var l=["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","getUserProperties"],d=0;d<l.length;d++)n(r.Identify.prototype,l[d]);var p=["setProductId","setQuantity","setPrice","setRevenueType","setEventProperties"],f=0;f<p.length;f++)n(r.Revenue.prototype,p[f]);var y=["getDeviceId","setDeviceId","getSessionId","setSessionId","getUserId","setUserId","setOptOut","setTransport","reset","extendSession"],g=["init","add","remove","track","logEvent","identify","groupIdentify","setGroup","revenue","flush"];i(r);var v=function(){var t="",r=Array.prototype.slice.call(arguments,0);r.forEach(function(r){void 0!==r&&null!==r&&""!==r&&(t!==e.location.origin?t=e.location.origin:t+="/",t+=r)});for(var n=/(\/\.*|\/)\/(\/\.*)+/g,s=/\.\//g,o=/\/\//g,i=/(\/\.\/)|(\/\.\.\/)/;t.match(n)||t.match(s)||t.match(o)||t.match(i);)t=t.replace(n,"$1").replace(s,"").replace(o,"/").replace(i,"/");return t};r.createInstance=function(e){return r._iq[e]={_q:[]},i(r._iq[e]),r._iq[e]},r.createInstance("default");const m=r.getInstance("default");m.init.promise=new Promise(function(e){m.onInit(function(){e(this)})});var h="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};h.amplitude=r,h.amplitudeSDK=r.createInstance("sdk"),h.amplitudeSDK._isLoadedremotely=!0;var S="amplitude-sdk.js";if(h.amplitudeSDK._onRemoteLoadedFns){var I=h.amplitudeSDK._onRemoteLoadedFns;delete h.amplitudeSDK._onRemoteLoadedFns;try{for(var w=0;w<I.length;w++)I[w](h.amplitudeSDK)}catch(e){}}if("function"==typeof define&&define.amd)define("amplitude-sdk",function(){return r});else if("object"==typeof module&&module.exports)module.exports=r;else{var q=h.amplitude;h.amplitude=r,h.amplitudeSDK.destroyNonProxiedInstance=function(){h.amplitude=q}}}}}(window,document)}();
     </script>
     
+    <!-- WICHTIG: Load actual Amplitude SDK from CDN -->
+    <script type="text/javascript">
+      (function(e,t){var n=e.amplitude||{_q:[],_iq:{}};var r=t.createElement("script")
+      ;r.type="text/javascript"
+      ;r.integrity="sha384-EHsBwqsnknQflVPXxG9K5sbAKxb+fTiVqKpphGu+n9eqVGkggD2PZscKCyQpS5d7"
+      ;r.crossOrigin="anonymous";r.async=true
+      ;r.src="https://cdn.amplitude.com/libs/amplitude-8.21.9-min.gz.js"
+      ;r.onload=function(){if(!e.amplitude.runQueuedFunctions){
+      console.log("[Amplitude] Error: could not load SDK")}}
+      ;var s=t.getElementsByTagName("script")[0];s.parentNode.insertBefore(r,s)
+      ;function i(e,t){e.prototype[t]=function(){
+      this._q.push([t].concat(Array.prototype.slice.call(arguments,0)));return this}}
+      var o=function(){this._q=[];return this}
+      ;var a=["setProductId","setQuantity","setPrice","setRevenueType","setEventProperties"];
+      for(var c=0;c<a.length;c++){i(o,a[c])}n.Revenue=o;var l=function(){this._q=[]
+      ;return this}
+      ;var u=["setProductId","setCompanyName","setPrice","setQuantity","setType","setStatus"];
+      for(var p=0;p<u.length;p++){i(l,u[p])}n.RevenueLTVEvent=l;var d=function(){this._q=[]
+      ;return this};
+      var f=["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove"];
+      for(var v=0;v<f.length;v++){i(d,f[v])}n.Identify=d;var S=function(){this._q=[]
+      ;return this};
+      var g=["setDeviceId","setUserId","setOptOut","setDeviceIdFromUrl","setGroup","setUserProperties","clearUserProperties","setVersionName","logEvent","logEventWithGroups","logRevenue","logRevenueV2","logEventWithTimestamp","logEventWithGroups","identify","resetSessionId","getSessionId","getUserId","getDeviceId","Identify","setMinTimeBetweenSessionsMillis","setEventUploadThreshold","setEventUploadPeriodMillis","setServerZone","setServerUrl","sendEvents","setLibrary","setTransport"];
+      function m(t){
+      function e(e){t[e]=function(){
+      t._q.push([e].concat(Array.prototype.slice.call(arguments,0)))}}
+      for(var n=0;n<g.length;n++){e(g[n])}}m(n);n.getInstance=function(e){
+      e=(!e||e.length===0?"$default_instance":e).toLowerCase()
+      ;if(!Object.prototype.hasOwnProperty.call(n._iq,e)){n._iq[e]={_q:[]};m(n._iq[e])
+      }return n._iq[e]};e.amplitude=n})(window,document);
+    </script>
+    
     <!-- Amplitude Analytics for MonkeyBlock -->
     <script src="/js/amplitude-web.js" defer></script>
 </head>
