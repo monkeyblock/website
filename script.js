@@ -37,6 +37,15 @@ document.querySelectorAll('a[href*="chromewebstore.google.com"]').forEach(link =
             location: buttonLocation,
             text: this.textContent.trim()
         });
+        
+        // Track Reddit Pixel Event for Install Button Click
+        if (typeof rdt !== 'undefined') {
+            rdt('track', 'Custom', {
+                customEventName: 'Install_Button_Click',
+                value: 1,
+                currency: 'USD'
+            });
+        }
     });
 });
 
