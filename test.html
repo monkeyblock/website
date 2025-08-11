@@ -269,11 +269,12 @@
         }
         
         function testIdentify() {
-            if (window.mbTracker && window.mbTracker.amplitude) {
+            if (window.mbTracker && window.mbTracker.isReady()) {
+                const amplitudeInstance = window.mbTracker.getAmplitudeInstance();
                 const identify = new amplitude.Identify();
                 identify.set('test_property', 'test_value');
                 identify.add('login_count', 1);
-                window.mbTracker.amplitude.identify(identify);
+                amplitudeInstance.identify(identify);
                 console.log('✅ Identify event sent');
                 alert('User properties updated!');
             } else {
@@ -282,12 +283,13 @@
         }
         
         function testRevenue() {
-            if (window.mbTracker && window.mbTracker.amplitude) {
+            if (window.mbTracker && window.mbTracker.isReady()) {
+                const amplitudeInstance = window.mbTracker.getAmplitudeInstance();
                 const revenue = new amplitude.Revenue()
                     .setProductId('com.monkeyblock.premium')
                     .setPrice(9.99)
                     .setQuantity(1);
-                window.mbTracker.amplitude.revenue(revenue);
+                amplitudeInstance.revenue(revenue);
                 console.log('✅ Revenue event sent');
                 alert('Revenue event tracked!');
             } else {
