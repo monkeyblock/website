@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonkeyBlock - Test Page</title>
+    
+    <!-- Amplitude Analytics SDK -->
+    <script src="https://cdn.amplitude.com/libs/analytics-browser-2.3.5-min.js"></script>
+    
+    <!-- MonkeyBlock Analytics -->
+    <script src="/js/amplitude-web.js" defer></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #console {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐵 MonkeyBlock Analytics Test Page</h1>
+    
+    <div id="status" class="status info">
+        Checking Amplitude SDK status...
+    </div>
+    
+    <div id="tracker-status" class="status info">
+        Checking MonkeyBlock Tracker status...
+    </div>
+    
+    <div id="user-info" class="status info">
+        User info will appear here...
+    </div>
+    
+    <h2>Test Actions</h2>
+    <button onclick="testTrackEvent()">Track Test Event</button>
+    <button onclick="testInstallClick()">Simulate Install Click</button>
+    <button onclick="checkStatus()">Refresh Status</button>
+    <button onclick="clearConsole()">Clear Console</button>
+    
+    <h2>Console Output</h2>
+    <div id="console"></div>
+    
+    <script>
+        // Override console.log to display in page
+        const originalLog = console.log;
+        const originalError = console.error;
+        const consoleDiv = document.getElementById('console');
+        
+        function addToConsole(message, type = 'log') {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.style.color = type === 'error' ? 'red' : type === 'warn' ? 'orange' : 'black';
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            consoleDiv.appendChild(entry);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole(args.join(' '), 'error');
+        };
+        
+        // Check status function
+        function checkStatus() {
+            const statusDiv = document.getElementById('status');
+            const trackerDiv = document.getElementById('tracker-status');
+            const userDiv = document.getElementById('user-info');
+            
+            // Check Amplitude SDK
+            if (window.amplitude && window.amplitude.track) {
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ Amplitude SDK loaded successfully';
+                console.log('Amplitude SDK is available');
+            } else {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Amplitude SDK not loaded';
+                console.error('Amplitude SDK not found');
+            }
+            
+            // Check MonkeyBlock Tracker
+            if (window.mbTracker) {
+                trackerDiv.className = 'status success';
+                trackerDiv.textContent = '✅ MonkeyBlock Tracker initialized';
+                console.log('MonkeyBlock Tracker is available');
+                
+                // Display user info
+                userDiv.className = 'status success';
+                userDiv.innerHTML = `
+                    <strong>User Info:</strong><br>
+                    User ID: ${window.mbTracker.userId || 'Not set'}<br>
+                    Device ID: ${window.mbTracker.deviceId || 'Not set'}<br>
+                    Initialized: ${window.mbTracker.initialized ? 'Yes' : 'No'}
+                `;
+            } else {
+                trackerDiv.className = 'status error';
+                trackerDiv.textContent = '❌ MonkeyBlock Tracker not initialized';
+                console.error('MonkeyBlock Tracker not found');
+            }
+        }
+        
+        // Test track event
+        function testTrackEvent() {
+            if (window.amplitude && window.amplitude.track) {
+                window.amplitude.track('Test Event', {
+                    test: true,
+                    timestamp: new Date().toISOString(),
+                    page: 'test-page'
+                });
+                console.log('Test event tracked successfully');
+                alert('Test event sent to Amplitude!');
+            } else {
+                console.error('Cannot track event - Amplitude not loaded');
+                alert('Error: Amplitude SDK not loaded');
+            }
+        }
+        
+        // Test install click
+        function testInstallClick() {
+            if (window.mbTracker && window.mbTracker.trackInstallClick) {
+                const fakeButton = {
+                    textContent: 'Test Install Button',
+                    dataset: { location: 'test-page' }
+                };
+                window.mbTracker.trackInstallClick(fakeButton);
+                console.log('Install click simulated');
+                alert('Install click event sent!');
+            } else {
+                console.error('Cannot simulate install click - Tracker not ready');
+                alert('Error: Tracker not ready');
+            }
+        }
+        
+        // Clear console
+        function clearConsole() {
+            consoleDiv.innerHTML = '';
+            addToConsole('Console cleared', 'log');
+        }
+        
+        // Initial status check
+        setTimeout(checkStatus, 1000);
+        setTimeout(checkStatus, 2000);
+        setTimeout(checkStatus, 3000);
+        
+        // Auto-refresh status every 5 seconds
+        setInterval(checkStatus, 5000);
+    </script>
+</body>
+</html>
