@@ -44,6 +44,22 @@
             a.appendChild(r);
         })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
     </script>
+    
+    <!-- Reddit Pixel -->
+    <script>
+        !function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);
+        rdt('init','a2_hgd05h3o4oza', {"optOut":false,"useDecimalCurrencyValues":true});
+        rdt('track', 'PageVisit');
+        
+        // Track Landing Page View with custom event
+        window.addEventListener('load', function() {
+            rdt('track', 'Custom', {
+                customEventName: 'Landing_Page_View',
+                value: 1,
+                currency: 'USD'
+            });
+        });
+    </script>
 </head>
 <body>
     <!-- Navigation -->
