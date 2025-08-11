@@ -14,10 +14,29 @@ class MonkeyBlockWebTracker {
     this.deviceId = this.generateFingerprint();
     this.sessionId = this.generateSessionId();
     
-    // Initialize tracking
-    this.initAmplitude();
-    this.trackLandingVisit();
-    this.setupEventListeners();
+    // Wait for Amplitude SDK to be fully loaded
+    this.waitForAmplitude();
+  }
+  
+  waitForAmplitude() {
+    let attempts = 0;
+    const checkAmplitude = () => {
+      attempts++;
+      if (typeof amplitude !== 'undefined' && amplitude.init) {
+        console.log('[MB Tracker] Amplitude SDK detected after', attempts, 'attempts');
+        // Initialize tracking
+        this.initAmplitude();
+        setTimeout(() => {
+          this.trackLandingVisit();
+          this.setupEventListeners();
+        }, 500); // Small delay to ensure initialization
+      } else if (attempts < 50) { // Try for 5 seconds
+        setTimeout(checkAmplitude, 100);
+      } else {
+        console.error('[MB Tracker] Amplitude SDK failed to load after 5 seconds');
+      }
+    };
+    checkAmplitude();
   }
   
   getOrCreateUserId() {
@@ -110,42 +129,56 @@ class MonkeyBlockWebTracker {
   initAmplitude() {
     // Check if Amplitude SDK is loaded
     if (typeof amplitude === 'undefined') {
-      console.error('[MB Tracker] Amplitude SDK not loaded!');
+      console.error('[MB Tracker] Amplitude SDK not loaded! Retrying in 1 second...');
+      setTimeout(() => this.initAmplitude(), 1000);
       return;
     }
     
-    // Initialize Amplitude with our IDs
-    amplitude.init(this.apiKey, this.userId, {
-      serverUrl: this.serverUrl,
-      deviceId: this.deviceId,
-      sessionId: this.sessionId,
-      includeReferrer: true,
-      includeUtm: true,
-      includeFbclid: true,
-      includeGclid: true,
-      trackingOptions: {
-        ipAddress: true,
-        language: true,
-        platform: true
-      }
-    });
-    
-    // Set user properties
-    amplitude.setUserProperties({
-      source_platform: 'website',
-      landing_fingerprint: this.deviceId,
-      initial_landing: new Date().toISOString(),
-      page_language: document.documentElement.lang || 'en'
-    });
-    
-    console.log('[MB Tracker] Amplitude initialized');
+    // Initialize Amplitude with our IDs  
+    try {
+      amplitude.init(this.apiKey, this.userId, {
+        serverUrl: this.serverUrl,
+        deviceId: this.deviceId,
+        sessionId: this.sessionId,
+        includeReferrer: true,
+        includeUtm: true,
+        includeFbclid: true,
+        includeGclid: true,
+        trackingOptions: {
+          ipAddress: true,
+          language: true,
+          platform: true
+        },
+        logLevel: 'VERBOSE' // Add verbose logging for debugging
+      });
+      
+      // Set user properties
+      amplitude.setUserProperties({
+        source_platform: 'website',
+        landing_fingerprint: this.deviceId,
+        initial_landing: new Date().toISOString(),
+        page_language: document.documentElement.lang || 'en'
+      });
+      
+      console.log('[MB Tracker] ✅ Amplitude initialized successfully with User ID:', this.userId);
+      
+      // Test event to confirm it's working
+      amplitude.logEvent('Amplitude Test Event', {
+        test: true,
+        timestamp: new Date().toISOString()
+      });
+      
+    } catch (error) {
+      console.error('[MB Tracker] Failed to initialize Amplitude:', error);
+    }
   }
   
   trackLandingVisit() {
     const utm = this.getUTMParameters();
     
-    // Track landing with full context
-    amplitude.track('Landing Page Visit', {
+    // Use logEvent instead of track (older SDK compatibility)
+    const eventName = 'Landing Page Visit';
+    const eventProps = {
       ...utm,
       page_url: window.location.href,
       page_title: document.title,
@@ -157,7 +190,18 @@ class MonkeyBlockWebTracker {
       screen_width: screen.width,
       screen_height: screen.height,
       timestamp: new Date().toISOString()
-    });
+    };
+    
+    // Try both methods for compatibility
+    if (amplitude.logEvent) {
+      amplitude.logEvent(eventName, eventProps);
+      console.log('[MB Tracker] ✅ Landing visit tracked with logEvent');
+    } else if (amplitude.logEvent) {
+      amplitude.logEvent(eventName, eventProps);
+      console.log('[MB Tracker] ✅ Landing visit tracked with track');
+    } else {
+      console.error('[MB Tracker] ❌ No tracking method available');
+    }
     
     // Store attribution data for later retrieval
     this.storeAttributionData(utm);
@@ -224,7 +268,7 @@ class MonkeyBlockWebTracker {
     const timeOnPage = Math.round((Date.now() - performance.timing.navigationStart) / 1000);
     
     // Track click event
-    amplitude.track('Install Button Clicked', {
+    amplitude.logEvent('Install Button Clicked', {
       ...utm,
       button_text: buttonText,
       button_location: buttonLocation,
@@ -280,7 +324,7 @@ class MonkeyBlockWebTracker {
         
         // Track milestone scroll depths
         if ([25, 50, 75, 90, 100].includes(scrollDepth)) {
-          amplitude.track('Scroll Depth Reached', {
+          amplitude.logEvent('Scroll Depth Reached', {
             depth: scrollDepth,
             timestamp: new Date().toISOString()
           });
@@ -306,7 +350,7 @@ class MonkeyBlockWebTracker {
     milestones.forEach(seconds => {
       setTimeout(() => {
         if (document.visibilityState === 'visible') {
-          amplitude.track('Time on Page Milestone', {
+          amplitude.logEvent('Time on Page Milestone', {
             seconds: seconds,
             timestamp: new Date().toISOString()
           });
@@ -317,7 +361,7 @@ class MonkeyBlockWebTracker {
     // Track on page unload
     window.addEventListener('beforeunload', () => {
       const timeOnPage = Math.round((Date.now() - startTime) / 1000);
-      amplitude.track('Page Exit', {
+      amplitude.logEvent('Page Exit', {
         time_on_page: timeOnPage,
         scroll_depth: this.maxScrollDepth || 0,
         timestamp: new Date().toISOString()
@@ -336,7 +380,7 @@ class MonkeyBlockWebTracker {
         hiddenTime += Date.now() - lastHiddenTimestamp;
         lastHiddenTimestamp = null;
         
-        amplitude.track('Page Visibility Changed', {
+        amplitude.logEvent('Page Visibility Changed', {
           state: 'visible',
           total_hidden_time: Math.round(hiddenTime / 1000),
           timestamp: new Date().toISOString()
