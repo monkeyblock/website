@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit Pixel Alternative Implementation</title>
+</head>
+<body>
+    <h1>Reddit Pixel - Alternative Implementation</h1>
+    <p>Testing different initialization parameters</p>
+    
+    <!-- Version 1: Mit expliziten Parametern -->
+    <script>
+    !function(w,d){
+        if(!w.rdt){
+            var p=w.rdt=function(){
+                p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)
+            };
+            p.callQueue=[];
+            var t=d.createElement("script");
+            t.src="https://www.redditstatic.com/ads/pixel.js";
+            t.async=!0;
+            var s=d.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(t,s)
+        }
+    }(window,document);
+    
+    // Warte bis Pixel geladen ist
+    window.addEventListener('DOMContentLoaded', function() {
+        // Init mit verschiedenen Optionen testen
+        rdt('init', 'a2_hgd05h3o4oza', {
+            optOut: false,
+            useDecimalCurrencyValues: true,
+            email: undefined  // Explicitly no email
+        });
+        
+        // Standard PageVisit
+        rdt('track', 'PageVisit');
+        
+        // Test verschiedene Event-Formate
+        setTimeout(function() {
+            // Format 1: Standard Event
+            rdt('track', 'Lead');
+            
+            // Format 2: Custom Event mit customEventName
+            rdt('track', 'Custom', {
+                customEventName: 'Test_Custom_Event'
+            });
+            
+            // Format 3: Mit Value
+            rdt('track', 'Purchase', {
+                value: 10.00,
+                currency: 'USD'
+            });
+            
+            console.log('All test events sent');
+        }, 1000);
+    });
+    </script>
+    
+    <div id="output"></div>
+    
+    <script>
+        // Debug Output
+        setTimeout(function() {
+            var output = document.getElementById('output');
+            if (window.rdt) {
+                output.innerHTML = '<h2>✅ Reddit Pixel Loaded</h2>';
+                output.innerHTML += '<p>Queue Length: ' + (window.rdt.callQueue ? window.rdt.callQueue.length : 0) + '</p>';
+                output.innerHTML += '<pre>' + JSON.stringify(window.rdt.callQueue, null, 2) + '</pre>';
+            } else {
+                output.innerHTML = '<h2>❌ Reddit Pixel NOT Loaded</h2>';
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

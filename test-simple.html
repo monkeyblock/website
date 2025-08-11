@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit Pixel Test - Simple Version</title>
+    
+    <!-- Reddit Pixel - BEFORE any other scripts -->
+    <script>
+    !function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);
+    rdt('init','a2_hgd05h3o4oza');
+    rdt('track', 'PageVisit');
+    </script>
+</head>
+<body>
+    <h1>Simple Reddit Pixel Test</h1>
+    <p>This page has the most basic Reddit Pixel implementation.</p>
+    <p>Check if Reddit Pixel Helper detects it.</p>
+    
+    <button onclick="sendTestEvent()">Send Test Event</button>
+    
+    <script>
+        function sendTestEvent() {
+            rdt('track', 'Lead');
+            alert('Lead event sent!');
+        }
+    </script>
+</body>
+</html>

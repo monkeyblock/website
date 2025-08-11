@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit Pixel Debug Test</title>
+</head>
+<body>
+    <h1>Reddit Pixel Debug Test</h1>
+    <p>Check the console and Reddit Pixel Helper extension</p>
+    <div id="status">Loading...</div>
+    
+    <!-- Reddit Pixel - Exact copy from your implementation -->
+    <script>
+        console.log('1. Starting Reddit Pixel initialization...');
+        
+        !function(w,d){
+            console.log('2. Creating rdt function...');
+            if(!w.rdt){
+                var p=w.rdt=function(){
+                    console.log('3. rdt called with:', arguments);
+                    p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)
+                };
+                p.callQueue=[];
+                var t=d.createElement("script");
+                t.src="https://www.redditstatic.com/ads/pixel.js";
+                t.async=!0;
+                console.log('4. Adding pixel.js script to page...');
+                t.onload = function() {
+                    console.log('5. pixel.js loaded successfully!');
+                    document.getElementById('status').innerHTML = '✅ Pixel script loaded';
+                };
+                t.onerror = function() {
+                    console.error('5. ERROR: pixel.js failed to load!');
+                    document.getElementById('status').innerHTML = '❌ Pixel script failed to load';
+                };
+                var s=d.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(t,s);
+            }
+        }(window,document);
+        
+        console.log('6. Initializing pixel with ID: a2_hgd05h3o4oza');
+        rdt('init','a2_hgd05h3o4oza', {"optOut":false,"useDecimalCurrencyValues":true});
+        
+        console.log('7. Tracking PageVisit event...');
+        rdt('track', 'PageVisit');
+        
+        // Track custom event after page loads
+        window.addEventListener('load', function() {
+            console.log('8. Page loaded, tracking custom event...');
+            rdt('track', 'Custom', {
+                customEventName: 'Debug_Test_Event',
+                value: 1,
+                currency: 'USD'
+            });
+            
+            // Check if rdt is available
+            setTimeout(function() {
+                console.log('9. Checking rdt object:', window.rdt);
+                console.log('10. Queue:', window.rdt ? window.rdt.callQueue : 'No rdt object');
+                
+                // Try another event after delay
+                if (window.rdt) {
+                    console.log('11. Sending delayed test event...');
+                    rdt('track', 'Custom', {
+                        customEventName: 'Delayed_Test_Event',
+                        value: 2,
+                        currency: 'USD'
+                    });
+                }
+            }, 3000);
+        });
+    </script>
+    
+    <hr>
+    <h2>Console Output:</h2>
+    <p>Open DevTools Console (F12) to see detailed debug information</p>
+    
+    <h2>Expected Behavior:</h2>
+    <ul>
+        <li>Reddit Pixel Helper should show events</li>
+        <li>Console should show numbered debug messages</li>
+        <li>Network tab should show request to reddit.com</li>
+    </ul>
+    
+    <button onclick="testManualEvent()">Test Manual Event</button>
+    
+    <script>
+        function testManualEvent() {
+            console.log('Manual test: Sending event...');
+            if (window.rdt) {
+                rdt('track', 'Custom', {
+                    customEventName: 'Manual_Button_Click',
+                    value: 10,
+                    currency: 'USD'
+                });
+                console.log('Manual test: Event sent!');
+            } else {
+                console.error('Manual test: rdt not available!');
+            }
+        }
+    </script>
+</body>
+</html>
