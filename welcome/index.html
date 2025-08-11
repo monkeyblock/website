@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to MonkeyBlock - Your Productivity Extension</title>
+    
+    <!-- Amplitude Analytics SDK -->
+    <script type="text/javascript">
+    !function(){"use strict";!function(e,t){var r=e.amplitude||{_q:[],_iq:{}};if(r.invoked)e.console&&console.error&&console.error("Amplitude snippet has been loaded.");else{r.invoked=!0;var n=function(e,t){e.prototype[t]=function(){return this._q.push({name:t,args:Array.prototype.slice.call(arguments,0)}),this}},s=function(e,t,r){return function(n){e._q.push({name:t,args:Array.prototype.slice.call(r,0),resolve:n})}},o=function(e,t,r){e[t]=function(){if(r)return{promise:new Promise(s(e,t,Array.prototype.slice.call(arguments)))}}},i=function(e){for(var t=0;t<y.length;t++)o(e,y[t],!1);for(var r=0;r<g.length;r++)o(e,g[r],!0)};r.getInstance=function(e){return e=(e&&0!==e.length?e:"$default_instance").toLowerCase(),Object.prototype.hasOwnProperty.call(r._iq,e)||(r._iq[e]={_q:[]},i(r._iq[e])),r._iq[e]},e.amplitude=r;for(var a=function(e){var t=r[e];return function(){return t.apply(r,arguments)}},c=["init","setOptOut","setDeviceId","setUserId","setSessionId","setUserProperties","clearUserProperties","setGroup","setRevenueProperties","logRevenueV2","revenue","setAmplitudeId","regenerateDeviceId","groupIdentify","onInit","onNewSessionStart","logEventWithTimestamp","logEventWithGroups","setSessionId","resetSessionId","getDeviceId","getUserId","setMinTimeBetweenSessionsMillis","setEventUploadThreshold","setUseDynamicConfig","setServerZone","setServerUrl","sendEvents","setLibrary","setTransport"],u=0;u<c.length;u++)n(r,c[u]);r.Identify=t.Identify,r.Revenue=t.Revenue;var l=["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","getUserProperties"],d=0;d<l.length;d++)n(r.Identify.prototype,l[d]);var p=["setProductId","setQuantity","setPrice","setRevenueType","setEventProperties"],f=0;f<p.length;f++)n(r.Revenue.prototype,p[f]);var y=["getDeviceId","setDeviceId","getSessionId","setSessionId","getUserId","setUserId","setOptOut","setTransport","reset","extendSession"],g=["init","add","remove","track","logEvent","identify","groupIdentify","setGroup","revenue","flush"];i(r);var v=function(){var t="",r=Array.prototype.slice.call(arguments,0);r.forEach(function(r){void 0!==r&&null!==r&&""!==r&&(t!==e.location.origin?t=e.location.origin:t+="/",t+=r)});for(var n=/(\/\.*|\/)\/(\/\.*)+/g,s=/\.\//g,o=/\/\//g,i=/(\/\.\/)|(\/\.\.\/)/;t.match(n)||t.match(s)||t.match(o)||t.match(i);)t=t.replace(n,"$1").replace(s,"").replace(o,"/").replace(i,"/");return t};r.createInstance=function(e){return r._iq[e]={_q:[]},i(r._iq[e]),r._iq[e]},r.createInstance("default");const m=r.getInstance("default");m.init.promise=new Promise(function(e){m.onInit(function(){e(this)})});var h="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};h.amplitude=r,h.amplitudeSDK=r.createInstance("sdk"),h.amplitudeSDK._isLoadedremotely=!0;var S="amplitude-sdk.js";if(h.amplitudeSDK._onRemoteLoadedFns){var I=h.amplitudeSDK._onRemoteLoadedFns;delete h.amplitudeSDK._onRemoteLoadedFns;try{for(var w=0;w<I.length;w++)I[w](h.amplitudeSDK)}catch(e){}}if("function"==typeof define&&define.amd)define("amplitude-sdk",function(){return r});else if("object"==typeof module&&module.exports)module.exports=r;else{var q=h.amplitude;h.amplitude=r,h.amplitudeSDK.destroyNonProxiedInstance=function(){h.amplitude=q}}}}}(window,document)}();
+    </script>
+    
+    <style>
+        :root {
+            --primary-color: #7a9b8e;
+            --secondary-color: #6b8a7a;
+            --accent-color: #e5c9a6;
+            --warning-color: #f0b98c;
+            --danger-color: #d9a19a;
+            --success-color: #a4c3b2;
+            --background: #f9f5f0;
+            --card-bg: #ffffff;
+            --text-primary: #6b4e3d;
+            --text-secondary: #8b6f5d;
+            --text-muted: #a08776;
+            --border-color: rgba(160, 135, 118, 0.12);
+            --border-hover: rgba(160, 135, 118, 0.2);
+            --shadow-light: rgba(107, 78, 61, 0.06);
+            --shadow-medium: rgba(107, 78, 61, 0.12);
+            --shadow-strong: rgba(107, 78, 61, 0.18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--background);
+            min-height: 100vh;
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cdefs%3E%3Cg id='leaf' opacity='0.03'%3E%3Cpath d='M20 10 Q 15 5, 10 10 Q 5 15, 10 20 Q 15 25, 20 20 Q 25 15, 20 10' fill='%23a08776' stroke='%23a08776' stroke-width='0.5'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23leaf' transform='translate(30,40) rotate(25)'/%3E%3Cuse href='%23leaf' transform='translate(80,20) rotate(-45) scale(0.8)'/%3E%3Cuse href='%23leaf' transform='translate(120,60) rotate(70) scale(1.2)'/%3E%3Cuse href='%23leaf' transform='translate(170,30) rotate(-20) scale(0.9)'/%3E%3Cuse href='%23leaf' transform='translate(40,100) rotate(110) scale(0.7)'/%3E%3Cuse href='%23leaf' transform='translate(100,120) rotate(-60) scale(1.1)'/%3E%3Cuse href='%23leaf' transform='translate(150,140) rotate(45) scale(0.85)'/%3E%3Cuse href='%23leaf' transform='translate(20,160) rotate(-30) scale(0.95)'/%3E%3Cuse href='%23leaf' transform='translate(180,180) rotate(90) scale(0.75)'/%3E%3C/svg%3E");
+            background-size: 200px 200px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        .monkey-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+        }
+        
+        .header h1 {
+            font-size: 42px;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+        }
+        
+        .header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+        
+        /* Success Banner */
+        .success-banner {
+            background: var(--success-color);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 30px auto;
+            max-width: 800px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            animation: slideIn 0.6s ease 0.4s both;
+        }
+        
+        .success-banner svg {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        
+        /* Features Grid */
+        .features-section {
+            margin: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow-light);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.6s ease 0.6s both;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px var(--shadow-medium);
+        }
+        
+        .feature-media {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-media img,
+        .feature-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .media-placeholder {
+            text-align: center;
+            color: white;
+        }
+        
+        .media-placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .media-placeholder-text {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .feature-content {
+            padding: 25px;
+        }
+        
+        .feature-title {
+            font-size: 22px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+        }
+        
+        .feature-description {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        .feature-highlights {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-highlights li {
+            color: var(--text-muted);
+            font-size: 14px;
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .feature-highlights li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        /* Quick Setup Section */
+        .setup-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 60px auto;
+            max-width: 900px;
+            box-shadow: 0 4px 20px var(--shadow-light);
+            animation: fadeIn 0.6s ease 0.8s both;
+        }
+        
+        .setup-title {
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .setup-steps {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .setup-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 20px;
+            background: var(--background);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .setup-step:hover {
+            background: var(--accent-color);
+            background: rgba(229, 201, 166, 0.2);
+        }
+        
+        .step-number {
+            background: var(--primary-color);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .step-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .step-content p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 60px 20px;
+            animation: fadeIn 0.6s ease 1s both;
+        }
+        
+        .btn-primary {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow-light);
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow-medium);
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            color: var(--primary-color);
+            padding: 14px 30px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            margin-left: 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        #attribution-sync {
+            display: none;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .btn-secondary {
+                display: block;
+                margin: 15px auto 0;
+            }
+        }
+    </style>
+    
+    <!-- Reddit Pixel -->
+    <script>
+        !function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);
+        rdt('init','a2_hgd05h3o4oza', {"optOut":false,"useDecimalCurrencyValues":true});
+        
+        // Fire events when page loads
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                rdt('track', 'PageVisit');
+                
+                // Check if we came from the extension
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('ext') === '1' || params.get('fp')) {
+                    rdt('track', 'Custom', {
+                        customEventName: 'Extension_Installed',
+                        value: 1,
+                        currency: 'USD'
+                    });
+                }
+            }, 100);
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="monkey-logo">🐵</div>
+            <h1>Welcome to MonkeyBlock!</h1>
+            <p>Your journey to better productivity starts now</p>
+        </div>
+        
+        <!-- Success Banner -->
+        <div class="success-banner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>Extension installed successfully! Let's get you started with a quick tour.</span>
+        </div>
+        
+        <!-- Features Section -->
+        <div class="features-section">
+            <h2 class="section-title">Powerful Features to Keep You Focused</h2>
+            
+            <div class="features-grid">
+                <!-- Visual Timer Feature -->
+                <div class="feature-card">
+                    <div class="feature-media">
+                        <!-- TODO: Replace with actual screenshot/video -->
+                        <div class="media-placeholder">
+                            <div class="media-placeholder-icon">⏱️</div>
+                            <div class="media-placeholder-text">[Screenshot: Timer in action on YouTube]</div>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">
+                            <span class="feature-icon">⏱️</span>
+                            Visual Timer
+                        </h3>
+                        <p class="feature-description">
+                            See exactly how much time you have left on each site with our intuitive countdown timer that changes color as time runs out.
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>Color-coded warnings</li>
+                            <li>Draggable and minimizable</li>
+                            <li>Remembers position</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Social Cleaner Feature -->
+                <div class="feature-card">
+                    <div class="feature-media">
+                        <!-- TODO: Replace with actual screenshot/video -->
+                        <div class="media-placeholder">
+                            <div class="media-placeholder-icon">🛡️</div>
+                            <div class="media-placeholder-text">[Video: Social Cleaner removing distractions]</div>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">
+                            <span class="feature-icon">🛡️</span>
+                            Social Cleaner
+                        </h3>
+                        <p class="feature-description">
+                            Remove distracting elements from social media sites. Hide shorts, comments, recommendations, and more.
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>Works on all major platforms</li>
+                            <li>Customizable per site</li>
+                            <li>Grayscale mode option</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Impulse Check Feature -->
+                <div class="feature-card">
+                    <div class="feature-media">
+                        <!-- TODO: Replace with actual screenshot/video -->
+                        <div class="media-placeholder">
+                            <div class="media-placeholder-icon">⏸️</div>
+                            <div class="media-placeholder-text">[Video: Impulse Check breathing exercise]</div>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">
+                            <span class="feature-icon">⏸️</span>
+                            Impulse Check
+                        </h3>
+                        <p class="feature-description">
+                            Take a mindful pause before accessing distracting sites with our breathing exercise and reflection prompt.
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>3-30 seconds pause</li>
+                            <li>Breathing animation</li>
+                            <li>Confetti on good choices</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Statistics Dashboard -->
+                <div class="feature-card">
+                    <div class="feature-media">
+                        <!-- TODO: Replace with actual screenshot/video -->
+                        <div class="media-placeholder">
+                            <div class="media-placeholder-icon">📊</div>
+                            <div class="media-placeholder-text">[Screenshot: Statistics dashboard with charts]</div>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">
+                            <span class="feature-icon">📊</span>
+                            Detailed Analytics
+                        </h3>
+                        <p class="feature-description">
+                            Track your browsing habits with beautiful charts and insights. See your progress over time.
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>Daily, weekly, monthly views</li>
+                            <li>Time distribution charts</li>
+                            <li>Session tracking</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Time Management -->
+                <div class="feature-card">
+                    <div class="feature-media">
+                        <!-- TODO: Replace with actual screenshot/video -->
+                        <div class="media-placeholder">
+                            <div class="media-placeholder-icon">⚙️</div>
+                            <div class="media-placeholder-text">[Screenshot: Time limits settings]</div>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">
+                            <span class="feature-icon">⚙️</span>
+                            Flexible Time Limits
+                        </h3>
+                        <p class="feature-description">
+                            Set daily limits for individual sites or combine them all. Schedule when limits should apply.
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>Individual or combined mode</li>
+                            <li>Time restrictions by day/hour</li>
+                            <li>Auto-reset at midnight</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Blacklist Feature -->
+                <div class="feature-card">
+                    <div class="feature-media">
+                        <!-- TODO: Replace with actual screenshot/video -->
+                        <div class="media-placeholder">
+                            <div class="media-placeholder-icon">🚫</div>
+                            <div class="media-placeholder-text">[Screenshot: Blocked page with quote]</div>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3 class="feature-title">
+                            <span class="feature-icon">🚫</span>
+                            Smart Blacklist
+                        </h3>
+                        <p class="feature-description">
+                            Completely block distracting websites with motivational quotes to keep you on track.
+                        </p>
+                        <ul class="feature-highlights">
+                            <li>Custom motivational quotes</li>
+                            <li>Bulk import/export</li>
+                            <li>Instant blocking</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Setup Guide -->
+        <div class="setup-section">
+            <h2 class="setup-title">Quick Setup Guide</h2>
+            
+            <div class="setup-steps">
+                <div class="setup-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Pin the Extension</h3>
+                        <p>Click the puzzle icon in your browser toolbar and pin MonkeyBlock for easy access. You'll use it often!</p>
+                    </div>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Set Your Time Limits</h3>
+                        <p>We've pre-configured 30-minute limits for popular social media sites. Adjust them to match your goals in the Settings tab.</p>
+                    </div>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Enable Social Cleaner</h3>
+                        <p>Turn on Social Cleaner to remove distracting elements like shorts, comments, and recommendations from social media.</p>
+                    </div>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Try Impulse Check</h3>
+                        <p>Enable the Impulse Check feature for a mindful pause before accessing distracting sites. It really helps!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <a href="chrome-extension://ggccjkdgmlclpigflghjjkgeblgdgffe/dashboard.html" class="btn-primary" id="open-dashboard">
+                Open Dashboard →
+            </a>
+            <a href="https://monkey-block.com/guide" class="btn-secondary" target="_blank">
+                View Full Guide
+            </a>
+        </div>
+    </div>
+    
+    <div id="attribution-sync"></div>
+    
+    <script src="welcome.js"></script>
+</body>
+</html>

@@ -4,15 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monkey Block - Take Control of Your Time</title>
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Monkey Block - Take Control of Your Time">
     <meta name="description" content="The friendly productivity companion that helps you stay focused and mindful of your social media usage.">
+    <meta name="theme-color" content="#4CAF50">
     
     <!-- Open Graph -->
     <meta property="og:title" content="Monkey Block - Take Control of Your Time">
     <meta property="og:description" content="The friendly productivity companion that helps you stay focused.">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://monkey-block.com/">
+    <meta property="og:image" content="https://monkey-block.com/android-chrome-512x512.png">
     
-    <link rel="icon" type="image/png" href="icons/icon128.png">
+    <!-- Favicons - Simplified -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Analytics Tracking Codes -->
+    <!-- Umami Analytics -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="56139d25-cea4-4752-a825-aa3f2292ca15"></script>
+    
+    <!-- Clicky Analytics -->
+    <script async data-id="101490099" src="//static.getclicky.com/js"></script>
+    
+    <!-- Plausible Analytics -->
+    <script defer data-domain="monkey-block.com" src="https://plausible.io/js/script.outbound-links.pageview-props.tagged-events.js"></script>
+    
+    <!-- Hotjar Tracking Code for MonkeyBlock -->
+    <script>
+        (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:6484827,hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');r.async=1;
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    </script>
+    
+    <!-- Reddit Pixel -->
+    <script>
+        !function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);
+        rdt('init','a2_hgd05h3o4oza', {"optOut":false,"useDecimalCurrencyValues":true});
+        
+        // Fire events when page loads
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                rdt('track', 'PageVisit');
+                
+                // Track custom Landing Page View event
+                rdt('track', 'Custom', {
+                    customEventName: 'Landing_Page_View',
+                    value: 1,
+                    currency: 'USD'
+                });
+            }, 100);
+        });
+    </script>
+    
+    <!-- Amplitude Analytics SDK -->
+    <script type="text/javascript">
+    !function(){"use strict";!function(e,t){var r=e.amplitude||{_q:[],_iq:{}};if(r.invoked)e.console&&console.error&&console.error("Amplitude snippet has been loaded.");else{r.invoked=!0;var n=function(e,t){e.prototype[t]=function(){return this._q.push({name:t,args:Array.prototype.slice.call(arguments,0)}),this}},s=function(e,t,r){return function(n){e._q.push({name:t,args:Array.prototype.slice.call(r,0),resolve:n})}},o=function(e,t,r){e[t]=function(){if(r)return{promise:new Promise(s(e,t,Array.prototype.slice.call(arguments)))}}},i=function(e){for(var t=0;t<y.length;t++)o(e,y[t],!1);for(var r=0;r<g.length;r++)o(e,g[r],!0)};r.getInstance=function(e){return e=(e&&0!==e.length?e:"$default_instance").toLowerCase(),Object.prototype.hasOwnProperty.call(r._iq,e)||(r._iq[e]={_q:[]},i(r._iq[e])),r._iq[e]},e.amplitude=r;for(var a=function(e){var t=r[e];return function(){return t.apply(r,arguments)}},c=["init","setOptOut","setDeviceId","setUserId","setSessionId","setUserProperties","clearUserProperties","setGroup","setRevenueProperties","logRevenueV2","revenue","setAmplitudeId","regenerateDeviceId","groupIdentify","onInit","onNewSessionStart","logEventWithTimestamp","logEventWithGroups","setSessionId","resetSessionId","getDeviceId","getUserId","setMinTimeBetweenSessionsMillis","setEventUploadThreshold","setUseDynamicConfig","setServerZone","setServerUrl","sendEvents","setLibrary","setTransport"],u=0;u<c.length;u++)n(r,c[u]);r.Identify=t.Identify,r.Revenue=t.Revenue;var l=["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","getUserProperties"],d=0;d<l.length;d++)n(r.Identify.prototype,l[d]);var p=["setProductId","setQuantity","setPrice","setRevenueType","setEventProperties"],f=0;f<p.length;f++)n(r.Revenue.prototype,p[f]);var y=["getDeviceId","setDeviceId","getSessionId","setSessionId","getUserId","setUserId","setOptOut","setTransport","reset","extendSession"],g=["init","add","remove","track","logEvent","identify","groupIdentify","setGroup","revenue","flush"];i(r);var v=function(){var t="",r=Array.prototype.slice.call(arguments,0);r.forEach(function(r){void 0!==r&&null!==r&&""!==r&&(t!==e.location.origin?t=e.location.origin:t+="/",t+=r)});for(var n=/(\/\.*|\/)\/(\/\.*)+/g,s=/\.\//g,o=/\/\//g,i=/(\/\.\/)|(\/\.\.\/)/;t.match(n)||t.match(s)||t.match(o)||t.match(i);)t=t.replace(n,"$1").replace(s,"").replace(o,"/").replace(i,"/");return t};r.createInstance=function(e){return r._iq[e]={_q:[]},i(r._iq[e]),r._iq[e]},r.createInstance("default");const m=r.getInstance("default");m.init.promise=new Promise(function(e){m.onInit(function(){e(this)})});var h="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};h.amplitude=r,h.amplitudeSDK=r.createInstance("sdk"),h.amplitudeSDK._isLoadedremotely=!0;var S="amplitude-sdk.js";if(h.amplitudeSDK._onRemoteLoadedFns){var I=h.amplitudeSDK._onRemoteLoadedFns;delete h.amplitudeSDK._onRemoteLoadedFns;try{for(var w=0;w<I.length;w++)I[w](h.amplitudeSDK)}catch(e){}}if("function"==typeof define&&define.amd)define("amplitude-sdk",function(){return r});else if("object"==typeof module&&module.exports)module.exports=r;else{var q=h.amplitude;h.amplitude=r,h.amplitudeSDK.destroyNonProxiedInstance=function(){h.amplitude=q}}}}}(window,document)}();
+    </script>
+    
+    <!-- Amplitude Analytics for MonkeyBlock -->
+    <script src="/js/amplitude-web.js" defer></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -25,16 +84,16 @@
             <a href="#benefits">Benefits</a>
             <a href="#features">Features</a>
             <a href="#faq">FAQ</a>
-            <a href="https://chrome.google.com/webstore" target="_blank" class="install-btn">Install Free</a>
+            <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" target="_blank" class="install-btn" data-track="install" data-location="navigation">Install Free</a>
         </div>
     </nav>
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero" data-section="hero">
         <div class="badge">🎉 Just Launched! Be among the first to try it</div>
         <h1>Take Back Control of Your Time</h1>
         <p class="subtitle">The friendly productivity companion that helps you stay focused and mindful of your social media usage</p>
         <div class="hero-buttons">
-            <a href="https://chrome.google.com/webstore" class="cta-primary">🚀 Add to Chrome - It's Free</a>
+            <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" class="cta-primary" data-track="install" data-location="hero-primary">🚀 Add to Chrome - It's Free</a>
             <a href="#features" class="cta-secondary">See How It Works</a>
         </div>
         
@@ -51,7 +110,7 @@
     </section>
 
     <!-- Benefits -->
-    <section class="benefits" id="benefits">
+    <section class="benefits" id="benefits" data-section="benefits">
         <div class="container">
             <h2>Why Monkey Block?</h2>
             <p class="section-subtitle">Transform your browsing habits with these powerful benefits</p>
@@ -75,7 +134,7 @@
         </div>
     </section>
     <!-- Features -->
-    <section class="features" id="features">
+    <section class="features" id="features" data-section="features">
         <div class="container">
             <h2>Powerful Features</h2>
             <p class="section-subtitle">Everything you need to master your digital habits</p>
@@ -134,7 +193,7 @@
     </section>
 
     <!-- FAQ -->
-    <section class="faq" id="faq">
+    <section class="faq" id="faq" data-section="faq">
         <div class="container">
             <h2>Frequently Asked Questions</h2>
             <div class="faq-grid">
@@ -158,18 +217,18 @@
         </div>
     </section>
     <!-- CTA -->
-    <section class="cta">
+    <section class="cta" data-section="cta">
         <div class="container">
             <h2>Be an Early Adopter</h2>
             <p>Help us build the best productivity tool by being one of our first users</p>
-            <a href="https://chrome.google.com/webstore" class="cta-button">🐵 Install Monkey Block Now</a>
+            <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" class="cta-button" data-track="install" data-location="bottom-cta">🐵 Install Monkey Block Now</a>
             <p class="cta-note">No credit card required • 2-minute setup</p>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>© <span id="year"></span> Monkey Block. All rights reserved.</p>
+        <p>© <span id="year"></span> Monkey Block. All rights reserved. | <a href="/privacy.html" style="color: inherit; text-decoration: underline;">Privacy Policy</a> | <a href="/contact.html" style="color: inherit; text-decoration: underline;">Contact</a></p>
     </footer>
 
     <script src="script.js"></script>
