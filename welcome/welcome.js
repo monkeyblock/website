@@ -163,12 +163,29 @@ class WelcomePage {
   }
   
   updateDashboardLink() {
-    // Update dashboard link to use the correct extension ID
+    // Update dashboard link behavior
     const dashboardLink = document.getElementById('open-dashboard');
     if (dashboardLink) {
-      const extensionId = this.getExtensionId();
-      dashboardLink.href = `chrome-extension://${extensionId}/dashboard.html?source=welcome`;
-      console.log('[Welcome] Dashboard link updated with extension ID:', extensionId);
+      const params = new URLSearchParams(window.location.search);
+      const isFromExtension = params.get('ext') === '1';
+      
+      if (isFromExtension) {
+        // If opened by extension, dashboard is already open in another tab
+        dashboardLink.textContent = 'Switch to Dashboard Tab →';
+        dashboardLink.removeAttribute('href');
+        dashboardLink.style.cursor = 'pointer';
+        
+        dashboardLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          alert('The dashboard is already open in another tab! Look for the "Monkey Block" tab in your browser.');
+        });
+      } else {
+        // If accessed directly, show instruction
+        dashboardLink.textContent = 'Install Extension First →';
+        dashboardLink.href = 'https://chromewebstore.google.com/detail/monkey-block/YOUR_EXTENSION_ID';
+      }
+      
+      console.log('[Welcome] Dashboard link updated');
     }
   }
   
