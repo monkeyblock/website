@@ -5,7 +5,9 @@
 
 class WelcomePage {
   constructor() {
-    this.extensionId = 'ggccjkdgmlclpigflghjjkgeblgdgffe'; // MonkeyBlock Extension ID
+    // Get extension ID from URL params (passed by extension) or use default for production
+    const params = new URLSearchParams(window.location.search);
+    this.extensionId = params.get('ext_id') || 'ggccjkdgmlclpigflghjjkgeblgdgffe'; // Use dynamic ID if provided
     this.apiKey = 'ad0a670d36f60cd419802ccfb5252139';
     this.serverUrl = 'https://api.eu.amplitude.com';
     this.initAmplitude();
@@ -181,7 +183,7 @@ class WelcomePage {
         dashboardLink.addEventListener('click', (e) => {
           e.preventDefault();
           
-          // Show helpful message with keyboard shortcut
+          // Show helpful message
           const message = document.createElement('div');
           message.className = 'dashboard-hint';
           message.innerHTML = `
@@ -191,11 +193,6 @@ class WelcomePage {
                         z-index: 10000; text-align: center; animation: slideIn 0.3s ease;">
               <h3 style="margin: 0 0 10px 0;">Dashboard is already open! 🎉</h3>
               <p style="margin: 0 0 15px 0;">Look for the "Monkey Block" tab in your browser</p>
-              <p style="margin: 0; font-size: 14px; opacity: 0.9;">
-                Tip: Use <kbd style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 3px;">Ctrl+Tab</kbd> 
-                (or <kbd style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 3px;">Cmd+Tab</kbd> on Mac) 
-                to switch between tabs
-              </p>
               <button onclick="this.parentElement.remove()" 
                       style="margin-top: 15px; padding: 8px 20px; background: white; 
                              color: #7a9b8e; border: none; border-radius: 6px; 
