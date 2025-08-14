@@ -170,19 +170,48 @@ class WelcomePage {
       const isFromExtension = params.get('ext') === '1';
       
       if (isFromExtension) {
-        // If opened by extension, dashboard is already open in another tab
-        dashboardLink.textContent = 'Switch to Dashboard Tab →';
+        // Dashboard was automatically opened in another tab
+        dashboardLink.innerHTML = '📊 Switch to Dashboard Tab →';
+        dashboardLink.classList.add('pulse-animation');
+        
+        // Remove href to prevent navigation issues
         dashboardLink.removeAttribute('href');
         dashboardLink.style.cursor = 'pointer';
         
         dashboardLink.addEventListener('click', (e) => {
           e.preventDefault();
-          alert('The dashboard is already open in another tab! Look for the "Monkey Block" tab in your browser.');
+          
+          // Show helpful message with keyboard shortcut
+          const message = document.createElement('div');
+          message.className = 'dashboard-hint';
+          message.innerHTML = `
+            <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                        background: #7a9b8e; color: white; padding: 20px 30px; 
+                        border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+                        z-index: 10000; text-align: center; animation: slideIn 0.3s ease;">
+              <h3 style="margin: 0 0 10px 0;">Dashboard is already open! 🎉</h3>
+              <p style="margin: 0 0 15px 0;">Look for the "Monkey Block" tab in your browser</p>
+              <p style="margin: 0; font-size: 14px; opacity: 0.9;">
+                Tip: Use <kbd style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 3px;">Ctrl+Tab</kbd> 
+                (or <kbd style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 3px;">Cmd+Tab</kbd> on Mac) 
+                to switch between tabs
+              </p>
+              <button onclick="this.parentElement.remove()" 
+                      style="margin-top: 15px; padding: 8px 20px; background: white; 
+                             color: #7a9b8e; border: none; border-radius: 6px; 
+                             cursor: pointer; font-weight: bold;">Got it!</button>
+            </div>
+          `;
+          document.body.appendChild(message);
+          
+          // Auto-remove after 5 seconds
+          setTimeout(() => message.remove(), 5000);
         });
       } else {
-        // If accessed directly, show instruction
-        dashboardLink.textContent = 'Install Extension First →';
+        // If accessed directly without extension
+        dashboardLink.innerHTML = '🚀 Install Extension First →';
         dashboardLink.href = 'https://chromewebstore.google.com/detail/monkey-block/YOUR_EXTENSION_ID';
+        dashboardLink.target = '_blank';
       }
       
       console.log('[Welcome] Dashboard link updated');
