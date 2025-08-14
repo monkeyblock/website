@@ -48,10 +48,12 @@ class WelcomePage {
     
     console.log('[Welcome] Page loaded', { isFromExtension, fingerprint });
     
+    // Always update dashboard link with correct extension ID
+    this.updateDashboardLink();
+    
     if (isFromExtension && fingerprint) {
       // Page was opened by the extension for attribution
       this.sendAttributionData(fingerprint);
-      this.updateDashboardLink();
     }
     
     // Always show welcome content
@@ -164,7 +166,9 @@ class WelcomePage {
     // Update dashboard link to use the correct extension ID
     const dashboardLink = document.getElementById('open-dashboard');
     if (dashboardLink) {
-      dashboardLink.href = 'chrome-extension://' + this.extensionId + '/dashboard.html';
+      const extensionId = this.getExtensionId();
+      dashboardLink.href = `chrome-extension://${extensionId}/dashboard.html?source=welcome`;
+      console.log('[Welcome] Dashboard link updated with extension ID:', extensionId);
     }
   }
   
