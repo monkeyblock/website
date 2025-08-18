@@ -179,8 +179,7 @@ class MonkeyBlockWebTracker {
     const params = new URLSearchParams(window.location.search);
     return {
       utm_source: params.get('utm_source') || 'direct',
-      utm_medium: params.get('utm_medium') || 'none',
-      utm_campaign: params.get('utm_campaign') || 'none',
+      utm_medium: params.get('utm_medium') || 'none',      utm_campaign: params.get('utm_campaign') || 'none',
       utm_content: params.get('utm_content') || '',
       utm_term: params.get('utm_term') || '',
       gclid: params.get('gclid') || '',
@@ -287,8 +286,7 @@ class MonkeyBlockWebTracker {
       if (scrollDepth > this.maxScrollDepth) {
         this.maxScrollDepth = scrollDepth;
         
-        // Track milestone scroll depths
-        if ([25, 50, 75, 100].includes(scrollDepth) && this.amplitude) {
+        // Track milestone scroll depths        if ([25, 50, 75, 100].includes(scrollDepth) && this.amplitude) {
           this.amplitude.track('Scroll Depth Reached', {
             depth: scrollDepth,
             time_on_page: Math.round((Date.now() - this.pageLoadTime) / 1000)
@@ -318,8 +316,7 @@ class MonkeyBlockWebTracker {
           this.amplitude.track('Time on Page Milestone', {
             seconds: seconds,
             scroll_depth: this.maxScrollDepth || 0
-          });
-        }
+          });        }
       }, seconds * 1000);
     });
     
