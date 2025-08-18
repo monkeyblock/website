@@ -286,7 +286,8 @@ class MonkeyBlockWebTracker {
       if (scrollDepth > this.maxScrollDepth) {
         this.maxScrollDepth = scrollDepth;
         
-        // Track milestone scroll depths        if ([25, 50, 75, 100].includes(scrollDepth) && this.amplitude) {
+        // Track milestone scroll depths
+        if ([25, 50, 75, 100].includes(scrollDepth) && this.amplitude) {
           this.amplitude.track('Scroll Depth Reached', {
             depth: scrollDepth,
             time_on_page: Math.round((Date.now() - this.pageLoadTime) / 1000)

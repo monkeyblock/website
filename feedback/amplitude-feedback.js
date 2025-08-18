@@ -127,11 +127,12 @@ class AmplitudeFeedback {
     try {
       // Try to communicate with extension if it's still installed
       if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
-        // Get extension ID from URL parameter or use hardcoded ID
+        // Get extension ID from URL parameter or use production ID
         const urlParams = new URLSearchParams(window.location.search);
-        const extensionId = urlParams.get('ext_id') || 'YOUR_EXTENSION_ID_HERE'; // Will be replaced with actual ID
+        const extensionId = urlParams.get('ext_id') || 'ggccjkdgmlclpigflghjjkgeblgdgffe';
         
-        // Try to get data from extension
+        // Only try if we have a valid extension ID
+        if (extensionId && extensionId !== 'YOUR_EXTENSION_ID_HERE') {
         return new Promise((resolve) => {
           chrome.runtime.sendMessage(extensionId, 
             { action: 'getAmplitudeData' }, 
@@ -154,6 +155,10 @@ class AmplitudeFeedback {
           // Timeout after 1 second
           setTimeout(() => resolve(null), 1000);
         });
+        } else {
+          console.log('[Amplitude Feedback] Extension ID not available or invalid');
+          return null;
+        }
       }
     } catch (error) {
       console.log('[Amplitude Feedback] Could not get data from extension:', error);
