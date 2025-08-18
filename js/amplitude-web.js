@@ -35,8 +35,17 @@ class MonkeyBlockWebTracker {
     let userId = localStorage.getItem('mb_user_id');
     
     if (!userId) {
-      // Generate new user ID
-      userId = `user_web_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // Generate new user ID with fingerprint part for better consistency
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substr(2, 9);
+      
+      // Include part of fingerprint if available
+      let fingerprintPart = random.substring(0, 8);
+      if (this.deviceId && this.deviceId.startsWith('fp_')) {
+        fingerprintPart = this.deviceId.substring(3, 11);
+      }
+      
+      userId = `user_web_${timestamp}_${fingerprintPart}_${random}`;
       localStorage.setItem('mb_user_id', userId);
       console.log('[MB Tracker] Generated new user ID:', userId);
     } else {
