@@ -11,9 +11,14 @@ class MonkeyBlockWebTracker {
     this.initialized = false;
     this.amplitude = null;
     
-    // Generate or retrieve IDs
-    this.userId = this.getOrCreateUserId();
+    // Generate fingerprint FIRST (needed for user ID)
     this.deviceId = this.generateFingerprint();
+    
+    // Then generate or retrieve user ID (uses fingerprint)
+    this.userId = this.getOrCreateUserId();
+    
+    // Store device ID in localStorage
+    localStorage.setItem('mb_amplitude_device_id', this.deviceId);
     
     // Initialize tracking once SDK is available
     this.initializeWhenReady();
@@ -89,8 +94,8 @@ class MonkeyBlockWebTracker {
     if (this.initialized) return;
     
     try {
-      // Use the default instance that was created by the snippet
-      this.amplitude = window.amplitude.getInstance();
+      // Direct init without getInstance (for newer SDK version)
+      this.amplitude = window.amplitude;
       
       // Initialize with configuration
       await this.amplitude.init(this.apiKey, this.userId, {
@@ -102,7 +107,8 @@ class MonkeyBlockWebTracker {
           formInteractions: false,
           fileDownloads: false
         },
-        flushIntervalMillis: 1000,        flushQueueSize: 30,
+        flushIntervalMillis: 1000,
+        flushQueueSize: 30,
         flushMaxRetries: 5,
         logLevel: window.location.hostname === 'localhost' ? 'Verbose' : 'None',
         minIdLength: 5,
@@ -110,7 +116,7 @@ class MonkeyBlockWebTracker {
         optOut: false,
         serverZone: 'EU',
         useBatch: true
-      }).promise;
+      });
       
       console.log('[MB Tracker] ✅ Amplitude initialized successfully');
       this.initialized = true;
@@ -139,28 +145,32 @@ class MonkeyBlockWebTracker {
   }
   
   storeInitialAttribution() {
-    // Store attribution data immediately on landing for later use
+    // ALWAYS store attribution data for extension to retrieve
     const utm = this.getUTMParameters();
-    const hasUTM = Object.values(utm).some(v => v && v !== 'direct' && v !== 'none' && v !== '');
     
-    if (hasUTM || document.referrer) {
-      const landingAttribution = {
-        userId: this.userId,
-        deviceId: this.deviceId,
-        fingerprint: this.deviceId,
-        utm: utm,
-        referrer: document.referrer,
-        landing_url: window.location.href,
-        landing_time: new Date().toISOString(),
-        timestamp: Date.now()
-      };
+    const landingAttribution = {
+      userId: this.userId,
+      deviceId: this.deviceId,
+      fingerprint: this.deviceId,
+      utm: utm,
+      referrer: document.referrer || 'direct',
+      landing_url: window.location.href,
+      landing_page: window.location.pathname,
+      landing_time: new Date().toISOString(),
+      timestamp: Date.now(),
+      source_platform: 'website'
+    };
+    
+    try {
+      // Always store, regardless of UTM presence
+      localStorage.setItem('mb_landing_attribution', JSON.stringify(landingAttribution));
+      console.log('[MB Tracker] Landing attribution stored:', landingAttribution);
       
-      try {
-        localStorage.setItem('mb_landing_attribution', JSON.stringify(landingAttribution));
-        console.log('[MB Tracker] Landing attribution stored:', landingAttribution);
-      } catch (error) {
-        console.error('[MB Tracker] Failed to store landing attribution:', error);
-      }
+      // Also store as pre-install for immediate availability
+      localStorage.setItem('mb_pre_install_attribution', JSON.stringify(landingAttribution));
+      
+    } catch (error) {
+      console.error('[MB Tracker] Failed to store landing attribution:', error);
     }
   }
   
