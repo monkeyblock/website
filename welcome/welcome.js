@@ -257,24 +257,31 @@ class WelcomePage {
   // Fingerprint generation for consistent device ID
   generateSimpleFingerprint() {
     try {
+      // Use SAME components as extension for consistency
       const components = {
-        userAgent: navigator.userAgent,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         language: navigator.language,
         platform: navigator.platform,
-        hardwareConcurrency: navigator.hardwareConcurrency || 0,
-        screenResolution: `${screen.width}x${screen.height}`,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        languages: navigator.languages ? navigator.languages.join(',') : navigator.language,
+        hardwareConcurrency: navigator.hardwareConcurrency || 4
       };
       
-      const fingerprint = Object.values(components).join('|');
-      let hash = 0;
-      for (let i = 0; i < fingerprint.length; i++) {
-        const char = fingerprint.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
+      // Convert to stable string
+      const fingerprintString = JSON.stringify(components);
+      
+      // Generate two hashes for better distribution (same as extension)
+      let hash1 = 0, hash2 = 5381;
+      
+      for (let i = 0; i < fingerprintString.length; i++) {
+        const char = fingerprintString.charCodeAt(i);
+        hash1 = ((hash1 << 5) - hash1) + char;
+        hash2 = ((hash2 << 5) + hash2) + char;
+        hash1 = hash1 & hash1; // Convert to 32-bit integer
+        hash2 = hash2 & hash2;
       }
       
-      return 'fp_' + Math.abs(hash).toString(36);
+      // Format: fp_hash1_hash2 (same format as extension)
+      return `fp_${Math.abs(hash1).toString(36)}_${Math.abs(hash2).toString(36)}`;
     } catch (error) {
       console.error('[Welcome] Fingerprint error:', error);
       return 'fp_' + Math.random().toString(36).substr(2, 9);
