@@ -188,12 +188,21 @@ class MonkeyBlockWebTracker {
   }
   
   setupEventListeners() {
-    // Track install button clicks
+    // Track install button clicks with capture phase for early execution
     document.querySelectorAll('[data-track="install"]').forEach(button => {
-      button.addEventListener('click', (e) => {
-        // Don't prevent default - let the link work normally
-        // Just track before navigation
+      // Use mousedown for immediate execution before navigation
+      button.addEventListener('mousedown', (e) => {
+        console.log('[MB Tracker] Install button mousedown detected');
         this.trackInstallClick(button);
+      });
+      
+      // Also keep click as backup
+      button.addEventListener('click', (e) => {
+        console.log('[MB Tracker] Install button click detected');
+        // Check if attribution was already stored
+        if (!localStorage.getItem('mb_pre_install_attribution')) {
+          this.trackInstallClick(button);
+        }
       });
     });
     
@@ -228,11 +237,11 @@ class MonkeyBlockWebTracker {
     
     // Store attribution data in multiple places for redundancy
     try {
-      // 1. LocalStorage (primary)
+      // 1. LocalStorage (primary) - SYNCHRONOUS
       localStorage.setItem('mb_pre_install_attribution', JSON.stringify(attributionData));
       localStorage.setItem('mb_attribution_timestamp', Date.now().toString());
       
-      // 2. Cookie backup (for cross-subdomain access)
+      // 2. Cookie backup (for cross-subdomain access) - SYNCHRONOUS
       const cookieData = btoa(JSON.stringify({
         uid: this.userId,
         did: this.deviceId,
@@ -240,21 +249,24 @@ class MonkeyBlockWebTracker {
       }));
       document.cookie = `mb_attr=${cookieData}; max-age=2592000; domain=.monkey-block.com; path=/`;
       
-      console.log('[MB Tracker] Attribution data stored:', attributionData);
+      console.log('[MB Tracker] Attribution data stored successfully');
+      
+      // 3. Track the event (this can be async)
+      if (this.amplitude) {
+        this.amplitude.track('Install Intent', {
+          ...attributionData,
+          button_text: buttonText,
+          page_section: this.getCurrentSection(),
+          time_on_page: Math.round((Date.now() - this.pageLoadTime) / 1000),
+          will_redirect_to: 'chrome_store'
+        });
+      }
+      
     } catch (error) {
       console.error('[MB Tracker] Failed to store attribution:', error);
     }
     
-    // Track the intent event
-    this.amplitude.track('Install Intent', {
-      ...attributionData,
-      button_text: buttonText,
-      page_section: this.getCurrentSection(),
-      time_on_page: Math.round((Date.now() - this.pageLoadTime) / 1000),
-      will_redirect_to: 'chrome_store'
-    });
-    
-    console.log('[MB Tracker] Install intent tracked, redirecting to Chrome Store...');
+    console.log('[MB Tracker] Install click processing complete');
   }
   
   trackScrollDepth() {
