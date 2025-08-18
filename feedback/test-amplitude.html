@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amplitude Tracking Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .log {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        button {
+            background: #7a9b8e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #6a8b7e;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Amplitude Tracking Test</h1>
+        
+        <div class="info">
+            <h3>Current Configuration:</h3>
+            <p><strong>API Key:</strong> <code id="apiKey">Loading...</code></p>
+            <p><strong>API Endpoint:</strong> <code id="apiEndpoint">Loading...</code></p>
+            <p><strong>User ID:</strong> <code id="userId">Not set</code></p>
+            <p><strong>Device ID:</strong> <code id="deviceId">Not set</code></p>
+            <p><strong>Session ID:</strong> <code id="sessionId">Not set</code></p>
+        </div>
+
+        <h3>Test Actions:</h3>
+        <button onclick="testInit()">1. Initialize Amplitude</button>
+        <button onclick="testSimpleEvent()">2. Send Test Event</button>
+        <button onclick="testUninstallEvent()">3. Test Uninstall Event</button>
+        <button onclick="testUserProperties()">4. Set User Properties</button>
+        <button onclick="clearLog()">Clear Log</button>
+
+        <div id="status"></div>
+
+        <h3>Debug Log:</h3>
+        <div class="log" id="log"></div>
+    </div>
+
+    <script src="amplitude-feedback.js"></script>
+    <script>
+        let amplitudeTest = null;
+
+        function log(message, data = null) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toTimeString().split(' ')[0];
+            let logEntry = `[${timestamp}] ${message}`;
+            if (data) {
+                logEntry += '\n' + JSON.stringify(data, null, 2);
+            }
+            logDiv.innerHTML += logEntry + '\n\n';
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message, data);
+        }
+
+        function updateStatus(message, isError = false) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status ' + (isError ? 'error' : 'success');
+            statusDiv.textContent = message;
+        }
+
+        function updateInfo() {
+            if (amplitudeTest) {
+                document.getElementById('apiKey').textContent = amplitudeTest.apiKey;
+                document.getElementById('apiEndpoint').textContent = amplitudeTest.apiEndpoint;
+                document.getElementById('userId').textContent = amplitudeTest.userId || 'Not set';
+                document.getElementById('deviceId').textContent = amplitudeTest.deviceId || 'Not set';
+                document.getElementById('sessionId').textContent = amplitudeTest.sessionId || 'Not set';
+            }
+        }
+
+        async function testInit() {
+            try {
+                log('Initializing Amplitude...');
+                amplitudeTest = new window.AmplitudeFeedback();
+                
+                // Override to add test parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                if (!urlParams.has('uid')) {
+                    urlParams.set('uid', 'test_user_' + Date.now());
+                    urlParams.set('did', 'test_device_' + Math.random().toString(36).substr(2, 9));
+                    urlParams.set('install_date', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+                    window.history.replaceState({}, '', '?' + urlParams.toString());
+                }
+
+                await amplitudeTest.init();
+                
+                updateInfo();
+                log('Initialization complete', {
+                    userId: amplitudeTest.userId,
+                    deviceId: amplitudeTest.deviceId,
+                    installDate: amplitudeTest.installDate,
+                    installDateSource: amplitudeTest.installDateSource,
+                    daysUsed: amplitudeTest.daysUsed
+                });
+                updateStatus('Amplitude initialized successfully!');
+            } catch (error) {
+                log('Error initializing:', error);
+                updateStatus('Error: ' + error.message, true);
+            }
+        }
+
+        async function testSimpleEvent() {
+            if (!amplitudeTest) {
+                updateStatus('Please initialize Amplitude first!', true);
+                return;
+            }
+
+            try {
+                log('Sending test event...');
+                await amplitudeTest.track('Test Event', {
+                    test: true,
+                    timestamp: new Date().toISOString(),
+                    random_value: Math.random()
+                });
+                
+                updateStatus('Test event sent successfully!');
+                log('Event sent successfully');
+            } catch (error) {
+                log('Error sending event:', error);
+                updateStatus('Error: ' + error.message, true);
+            }
+        }
+
+        async function testUninstallEvent() {
+            if (!amplitudeTest) {
+                updateStatus('Please initialize Amplitude first!', true);
+                return;
+            }
+
+            try {
+                log('Sending uninstall event...');
+                await amplitudeTest.trackUninstall('test-reason', {
+                    missing_feature: 'Test feature',
+                    detailed_feedback: 'This is a test uninstall event'
+                });
+                
+                updateStatus('Uninstall event sent successfully!');
+                log('Uninstall event sent successfully');
+            } catch (error) {
+                log('Error sending uninstall event:', error);
+                updateStatus('Error: ' + error.message, true);
+            }
+        }
+
+        async function testUserProperties() {
+            if (!amplitudeTest) {
+                updateStatus('Please initialize Amplitude first!', true);
+                return;
+            }
+
+            try {
+                log('Setting user properties...');
+                await amplitudeTest.setStandardUserProperties();
+                
+                updateStatus('User properties set successfully!');
+                log('User properties set successfully');
+            } catch (error) {
+                log('Error setting user properties:', error);
+                updateStatus('Error: ' + error.message, true);
+            }
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+            document.getElementById('status').innerHTML = '';
+        }
+
+        // Auto-init on load
+        window.addEventListener('DOMContentLoaded', () => {
+            log('Page loaded, ready to test Amplitude tracking');
+            updateInfo();
+        });
+    </script>
+</body>
+</html>

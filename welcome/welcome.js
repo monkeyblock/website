@@ -5,7 +5,9 @@
 
 class WelcomePage {
   constructor() {
-    this.extensionId = 'ggccjkdgmlclpigflghjjkgeblgdgffe'; // MonkeyBlock Extension ID
+    // Get extension ID from URL params (passed by extension) or use default for production
+    const params = new URLSearchParams(window.location.search);
+    this.extensionId = params.get('ext_id') || 'ggccjkdgmlclpigflghjjkgeblgdgffe'; // Use dynamic ID if provided
     this.apiKey = 'ad0a670d36f60cd419802ccfb5252139';
     this.serverUrl = 'https://api.eu.amplitude.com';
     this.initAmplitude();
@@ -13,9 +15,12 @@ class WelcomePage {
   }
   
   initAmplitude() {
-    // Initialize Amplitude if available
     if (typeof amplitude !== 'undefined') {
-      // Get or create user ID
+      // Get fingerprint from URL if available for consistent device ID
+      const params = new URLSearchParams(window.location.search);
+      const fingerprint = params.get('fp') || this.generateSimpleFingerprint();
+      
+      // Consistent user ID generation
       const userId = localStorage.getItem('mb_user_id') || 
                      `user_welcome_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
@@ -25,11 +30,29 @@ class WelcomePage {
       
       amplitude.init(this.apiKey, userId, {
         serverUrl: this.serverUrl,
+        deviceId: fingerprint,  // Use fingerprint as device ID for consistency
         includeReferrer: true,
-        includeUtm: true
+        includeUtm: true,
+        includeGclid: true,  // Google Click ID tracking
+        includeFbclid: true,  // Facebook Click ID tracking
+        saveParamsReferrerOncePerSession: false,
+        trackingOptions: {
+          ipAddress: true  // Enable IP tracking for geo-location
+        }
       });
       
-      console.log('[Welcome] Amplitude initialized with user:', userId);
+      // Set enhanced user properties
+      amplitude.setUserProperties({
+        platform: navigator.platform,
+        language: navigator.language,
+        source: 'welcome_page',
+        has_extension: params.get('ext') === '1',
+        browser_name: this.getBrowserName(),
+        device_type: this.getDeviceType(),
+        os_name: this.detectOS()
+      });
+      
+      console.log('[Welcome] Amplitude initialized:', { userId, deviceId: fingerprint });
     } else {
       console.warn('[Welcome] Amplitude SDK not available');
     }
@@ -48,10 +71,12 @@ class WelcomePage {
     
     console.log('[Welcome] Page loaded', { isFromExtension, fingerprint });
     
+    // Always update dashboard link with correct extension ID
+    this.updateDashboardLink();
+    
     if (isFromExtension && fingerprint) {
       // Page was opened by the extension for attribution
       this.sendAttributionData(fingerprint);
-      this.updateDashboardLink();
     }
     
     // Always show welcome content
@@ -161,10 +186,53 @@ class WelcomePage {
   }
   
   updateDashboardLink() {
-    // Update dashboard link to use the correct extension ID
+    // Update dashboard link behavior
     const dashboardLink = document.getElementById('open-dashboard');
     if (dashboardLink) {
-      dashboardLink.href = 'chrome-extension://' + this.extensionId + '/dashboard.html';
+      const params = new URLSearchParams(window.location.search);
+      const isFromExtension = params.get('ext') === '1';
+      
+      if (isFromExtension) {
+        // Dashboard was automatically opened in another tab
+        dashboardLink.innerHTML = '📊 Switch to Dashboard Tab →';
+        dashboardLink.classList.add('pulse-animation');
+        
+        // Remove href to prevent navigation issues
+        dashboardLink.removeAttribute('href');
+        dashboardLink.style.cursor = 'pointer';
+        
+        dashboardLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          
+          // Show helpful message
+          const message = document.createElement('div');
+          message.className = 'dashboard-hint';
+          message.innerHTML = `
+            <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                        background: #7a9b8e; color: white; padding: 20px 30px; 
+                        border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+                        z-index: 10000; text-align: center; animation: slideIn 0.3s ease;">
+              <h3 style="margin: 0 0 10px 0;">Dashboard is already open! 🎉</h3>
+              <p style="margin: 0 0 15px 0;">Look for the "Monkey Block" tab in your browser</p>
+              <button onclick="this.parentElement.remove()" 
+                      style="margin-top: 15px; padding: 8px 20px; background: white; 
+                             color: #7a9b8e; border: none; border-radius: 6px; 
+                             cursor: pointer; font-weight: bold;">Got it!</button>
+            </div>
+          `;
+          document.body.appendChild(message);
+          
+          // Auto-remove after 5 seconds
+          setTimeout(() => message.remove(), 5000);
+        });
+      } else {
+        // If accessed directly without extension
+        dashboardLink.innerHTML = '🚀 Install Extension First →';
+        dashboardLink.href = 'https://chromewebstore.google.com/detail/monkey-block/YOUR_EXTENSION_ID';
+        dashboardLink.target = '_blank';
+      }
+      
+      console.log('[Welcome] Dashboard link updated');
     }
   }
   
@@ -186,11 +254,128 @@ class WelcomePage {
     }
   }
   
+  // Fingerprint generation for consistent device ID
+  generateSimpleFingerprint() {
+    try {
+      const components = {
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        platform: navigator.platform,
+        hardwareConcurrency: navigator.hardwareConcurrency || 0,
+        screenResolution: `${screen.width}x${screen.height}`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      };
+      
+      const fingerprint = Object.values(components).join('|');
+      let hash = 0;
+      for (let i = 0; i < fingerprint.length; i++) {
+        const char = fingerprint.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      
+      return 'fp_' + Math.abs(hash).toString(36);
+    } catch (error) {
+      console.error('[Welcome] Fingerprint error:', error);
+      return 'fp_' + Math.random().toString(36).substr(2, 9);
+    }
+  }
+
+  // Helper methods for user properties
+  getBrowserName() {
+    const userAgent = navigator.userAgent;
+    if (userAgent.indexOf('Chrome') !== -1) return 'Chrome';
+    if (userAgent.indexOf('Firefox') !== -1) return 'Firefox';
+    if (userAgent.indexOf('Safari') !== -1) return 'Safari';
+    if (userAgent.indexOf('Edge') !== -1) return 'Edge';
+    return 'Unknown';
+  }
+
+  getDeviceType() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (/mobile|android|iphone/i.test(userAgent)) return 'Mobile';
+    if (/tablet|ipad/i.test(userAgent)) return 'Tablet';
+    return 'Desktop';
+  }
+
+  detectOS() {
+    const userAgent = navigator.userAgent;
+    if (userAgent.indexOf('Win') !== -1) return 'Windows';
+    if (userAgent.indexOf('Mac') !== -1) return 'macOS';
+    if (userAgent.indexOf('Linux') !== -1) return 'Linux';
+    if (userAgent.indexOf('Android') !== -1) return 'Android';
+    if (userAgent.indexOf('like Mac') !== -1) return 'iOS';
+    return 'Unknown';
+  }
+  
   trackPageView() {
-    // Track welcome page view
+    const params = new URLSearchParams(window.location.search);
+    const isFromExtension = params.get('ext') === '1';
+    
+    // Main page view event
     this.trackEvent('Welcome Page Viewed', {
-      from_extension: new URLSearchParams(window.location.search).get('ext') === '1',
-      has_fingerprint: !!new URLSearchParams(window.location.search).get('fp')
+      from_extension: isFromExtension,
+      has_fingerprint: !!params.get('fp'),
+      has_version: !!params.get('v'),
+      extension_id: params.get('ext_id'),
+      page_load_time: window.performance?.timing ? 
+        window.performance.timing.loadEventEnd - window.performance.timing.navigationStart : null
+    });
+    
+    // Track installation source
+    if (isFromExtension) {
+      this.trackEvent('Extension Installed - Welcome', {
+        version: params.get('v'),
+        fingerprint: params.get('fp'),
+        extension_id: params.get('ext_id')
+      });
+    }
+    
+    // Track time on page and engagement
+    this.startEngagementTracking();
+  }
+
+  startEngagementTracking() {
+    const startTime = Date.now();
+    let tracked30s = false;
+    let tracked60s = false;
+    let clickedDashboard = false;
+    
+    // Track 30 second engagement
+    setTimeout(() => {
+      if (!tracked30s) {
+        tracked30s = true;
+        this.trackEvent('Welcome Page - 30s Engagement', {
+          time_on_page: 30
+        });
+      }
+    }, 30000);
+    
+    // Track 60 second engagement
+    setTimeout(() => {
+      if (!tracked60s) {
+        tracked60s = true;
+        this.trackEvent('Welcome Page - 60s Engagement', {
+          time_on_page: 60
+        });
+      }
+    }, 60000);
+
+    // Track dashboard link clicks
+    document.addEventListener('click', (e) => {
+      if (e.target.href && e.target.href.includes('chrome-extension://')) {
+        clickedDashboard = true;
+        this.trackEvent('Welcome Page - Dashboard Clicked');
+      }
+    });
+    
+    // Track when leaving
+    window.addEventListener('beforeunload', () => {
+      const timeOnPage = Math.floor((Date.now() - startTime) / 1000);
+      this.trackEvent('Welcome Page - Left', {
+        time_on_page: timeOnPage,
+        clicked_dashboard: clickedDashboard
+      });
     });
   }
   
