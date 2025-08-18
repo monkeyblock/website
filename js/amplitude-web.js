@@ -47,26 +47,31 @@ class MonkeyBlockWebTracker {
   }
   
   generateFingerprint() {
-    // Browser fingerprinting for device ID
+    // Use unified fingerprint generator
+    if (typeof FingerprintGenerator !== 'undefined') {
+      return FingerprintGenerator.generate();
+    }
+    
+    // Fallback to inline implementation if shared module not loaded
+    console.warn('[MB Tracker] FingerprintGenerator not found, using fallback');
     const components = {
-      screen: `${screen.width}x${screen.height}x${screen.colorDepth}`,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       language: navigator.language,
       platform: navigator.platform,
-      cores: navigator.hardwareConcurrency || 'unknown',
-      memory: navigator.deviceMemory || 'unknown',
-      pixelRatio: window.devicePixelRatio || 1
+      languages: navigator.languages ? navigator.languages.join(',') : navigator.language,
+      hardwareConcurrency: navigator.hardwareConcurrency || 4
     };
     
-    // Simple hash function
-    const rawString = JSON.stringify(components);    let hash = 0;
-    for (let i = 0; i < rawString.length; i++) {
-      const char = rawString.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
+    const fingerprintString = JSON.stringify(components);
+    let hash1 = 0, hash2 = 5381;
+    
+    for (let i = 0; i < fingerprintString.length; i++) {
+      const char = fingerprintString.charCodeAt(i);
+      hash1 = ((hash1 << 5) - hash1) + char;
+      hash2 = ((hash2 << 5) + hash2) + char;
     }
     
-    const fingerprint = `fp_${Math.abs(hash).toString(36)}`;
+    const fingerprint = `fp_${Math.abs(hash1).toString(36)}_${Math.abs(hash2).toString(36)}`;
     console.log('[MB Tracker] Generated fingerprint:', fingerprint);
     return fingerprint;
   }
@@ -115,10 +120,38 @@ class MonkeyBlockWebTracker {
       // Track initial landing
       this.trackLandingVisit();
       this.setupEventListeners();
+      this.storeInitialAttribution();
       
     } catch (error) {
-      console.error('[MB Tracker] Failed to initialize Amplitude:', error);      // Retry in a moment
+      console.error('[MB Tracker] Failed to initialize Amplitude:', error);
+      // Retry in a moment
       setTimeout(() => this.initializeWhenReady(), 1000);
+    }
+  }
+  
+  storeInitialAttribution() {
+    // Store attribution data immediately on landing for later use
+    const utm = this.getUTMParameters();
+    const hasUTM = Object.values(utm).some(v => v && v !== 'direct' && v !== 'none' && v !== '');
+    
+    if (hasUTM || document.referrer) {
+      const landingAttribution = {
+        userId: this.userId,
+        deviceId: this.deviceId,
+        fingerprint: this.deviceId,
+        utm: utm,
+        referrer: document.referrer,
+        landing_url: window.location.href,
+        landing_time: new Date().toISOString(),
+        timestamp: Date.now()
+      };
+      
+      try {
+        localStorage.setItem('mb_landing_attribution', JSON.stringify(landingAttribution));
+        console.log('[MB Tracker] Landing attribution stored:', landingAttribution);
+      } catch (error) {
+        console.error('[MB Tracker] Failed to store landing attribution:', error);
+      }
     }
   }
   
@@ -175,16 +208,51 @@ class MonkeyBlockWebTracker {
       return;
     }
     
-    const buttonText = button.textContent || 'Unknown';    const buttonLocation = button.dataset.location || 'unknown';
+    const buttonText = button.textContent || 'Unknown';
+    const buttonLocation = button.dataset.location || 'unknown';
     
-    this.amplitude.track('Install Button Clicked', {
-      button_text: buttonText,
+    // Prepare attribution data BEFORE redirect
+    const attributionData = {
+      userId: this.userId,
+      deviceId: this.deviceId,
+      fingerprint: this.deviceId, // Same as device ID
+      utm: this.getUTMParameters(),
+      referrer: document.referrer,
+      landing_page: window.location.pathname,
       button_location: buttonLocation,
+      timestamp: Date.now(),
+      source_platform: 'website'
+    };
+    
+    // Store attribution data in multiple places for redundancy
+    try {
+      // 1. LocalStorage (primary)
+      localStorage.setItem('mb_pre_install_attribution', JSON.stringify(attributionData));
+      localStorage.setItem('mb_attribution_timestamp', Date.now().toString());
+      
+      // 2. Cookie backup (for cross-subdomain access)
+      const cookieData = btoa(JSON.stringify({
+        uid: this.userId,
+        did: this.deviceId,
+        utm: attributionData.utm.utm_source // Simplified for cookie size
+      }));
+      document.cookie = `mb_attr=${cookieData}; max-age=2592000; domain=.monkey-block.com; path=/`;
+      
+      console.log('[MB Tracker] Attribution data stored:', attributionData);
+    } catch (error) {
+      console.error('[MB Tracker] Failed to store attribution:', error);
+    }
+    
+    // Track the intent event
+    this.amplitude.track('Install Intent', {
+      ...attributionData,
+      button_text: buttonText,
       page_section: this.getCurrentSection(),
-      time_on_page: Math.round((Date.now() - this.pageLoadTime) / 1000)
+      time_on_page: Math.round((Date.now() - this.pageLoadTime) / 1000),
+      will_redirect_to: 'chrome_store'
     });
     
-    console.log('[MB Tracker] Install click tracked:', buttonLocation);
+    console.log('[MB Tracker] Install intent tracked, redirecting to Chrome Store...');
   }
   
   trackScrollDepth() {
