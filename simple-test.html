@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amplitude SDK Simple Test</title>
+</head>
+<body>
+    <h1>Amplitude SDK Simple Test</h1>
+    <div id="status">Loading...</div>
+    <button onclick="testInit()">Test Init</button>
+    <button onclick="testTrack()">Test Track</button>
+    <pre id="output"></pre>
+    
+    <!-- Amplitude Browser SDK v2 Snippet -->
+    <script type="text/javascript">
+    !function(){"use strict";!function(e,t){var n=e.amplitude||{_q:[],_iq:{}};if(n.invoked)e.console&&console.error&&console.error("Amplitude snippet has been loaded.");else{n.invoked=!0;var r=function(e,t){e.prototype[t]=function(){return this._q.push([t].concat(Array.prototype.slice.call(arguments,0))),this}},s=function(e,t,n){return function(r){e._q.push({name:t,args:Array.prototype.slice.call(n,0),resolve:r})}},o=function(e,t,n){e[t]=function(){if(n)return{promise:new Promise(s(e,t,Array.prototype.slice.call(arguments)))}}},a=function(e){for(var t=0;t<v.length;t++)o(e,v[t],!1);for(var n=0;n<y.length;n++)o(e,y[n],!0)};n.getInstance=function(e){return e=(e&&0!==e.length?e:"$default_instance").toLowerCase(),Object.prototype.hasOwnProperty.call(n._iq,e)||(n._iq[e]={_q:[]},a(n._iq[e])),n._iq[e]},e.amplitude=n;for(var i=function(e){var t=n[e];return function(){return t.apply(n,arguments)}},c=["init","setOptOut","setDeviceId","setUserId","setSessionId","setUserProperties","clearUserProperties","setGroup","setRevenueProperties","logRevenueV2","revenue","setAmplitudeId","regenerateDeviceId","groupIdentify","onInit","onNewSessionStart","logEventWithTimestamp","logEventWithGroups","setSessionId","resetSessionId","getDeviceId","getUserId","setMinTimeBetweenSessionsMillis","setEventUploadThreshold","setUseDynamicConfig","setServerZone","setServerUrl","sendEvents","setLibrary","setTransport"],l=0;l<c.length;l++)r(n,c[l]);n.Identify=t.Identify,n.Revenue=t.Revenue;var u=["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","getUserProperties"],d=0;d<u.length;d++)r(n.Identify.prototype,u[d]);var p=["setProductId","setQuantity","setPrice","setRevenueType","setEventProperties"],f=0;f<p.length;f++)r(n.Revenue.prototype,p[f]);var v=["getDeviceId","setDeviceId","getSessionId","setSessionId","getUserId","setUserId","setOptOut","setTransport","reset","extendSession"],y=["init","add","remove","track","logEvent","identify","groupIdentify","setGroup","revenue","flush"];a(n),n.createInstance=function(e){return n._iq[e]={_q:[]},a(n._iq[e]),n._iq[e]},n.createInstance("default");var g="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};g.amplitude=n}}(window,document)}();
+    </script>
+    
+    <!-- Load Amplitude SDK -->
+    <script type="text/javascript">
+      (function(e,t){
+        var n=e.amplitude||{_q:[],_iq:{}};
+        var r=t.createElement("script");
+        r.type="text/javascript";
+        r.async=true;
+        r.src="https://cdn.amplitude.com/libs/analytics-browser-2.11.5-min.js.gz";
+        r.onload=function(){
+          console.log("Amplitude SDK loaded!");
+          document.getElementById('status').textContent = 'SDK Loaded!';
+          updateStatus();
+        };
+        r.onerror=function(){
+          console.error("Failed to load Amplitude SDK");
+          document.getElementById('status').textContent = 'SDK Failed to Load!';
+        };
+        var s=t.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(r,s);
+      })(window,document);
+    </script>
+    
+    <script>
+        function updateStatus() {
+            const output = document.getElementById('output');
+            const status = {
+                'window.amplitude exists': typeof window.amplitude !== 'undefined',
+                'amplitude.getInstance exists': window.amplitude && typeof window.amplitude.getInstance === 'function',
+                'amplitude.init exists': window.amplitude && typeof window.amplitude.init === 'function',
+                'amplitude.track exists': window.amplitude && typeof window.amplitude.track === 'function',
+                'amplitude.Identify exists': window.amplitude && typeof window.amplitude.Identify === 'function',
+                'amplitude.Revenue exists': window.amplitude && typeof window.amplitude.Revenue === 'function'
+            };
+            output.textContent = JSON.stringify(status, null, 2);
+        }
+        
+        async function testInit() {
+            try {
+                const instance = window.amplitude.getInstance();
+                await instance.init('ad0a670d36f60cd419802ccfb5252139', 'test-user-123', {
+                    serverUrl: 'https://api.eu.amplitude.com/2/httpapi',
+                    logLevel: 'Verbose'
+                }).promise;
+                
+                console.log('Init successful!');
+                alert('Init successful!');
+                updateStatus();
+            } catch (error) {
+                console.error('Init failed:', error);
+                alert('Init failed: ' + error.message);
+            }
+        }
+        
+        function testTrack() {
+            try {
+                const instance = window.amplitude.getInstance();
+                instance.track('Test Event', {
+                    test: true,
+                    timestamp: new Date().toISOString()
+                });
+                console.log('Track successful!');
+                alert('Event tracked!');
+            } catch (error) {
+                console.error('Track failed:', error);
+                alert('Track failed: ' + error.message);
+            }
+        }
+        
+        // Check status every second
+        setInterval(updateStatus, 1000);
+    </script>
+</body>
+</html>
