@@ -23,14 +23,11 @@ class FingerprintGenerator {
         // Timezone is very stable and unique enough for grouping
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         
-        // Language settings rarely change
+        // Language settings rarely change (single value only for consistency)
         language: navigator.language,
         
         // Platform is stable (e.g., "Win32", "MacIntel")
         platform: navigator.platform,
-        
-        // Full language list for better uniqueness
-        languages: navigator.languages ? navigator.languages.join(',') : navigator.language,
         
         // Hardware concurrency (CPU cores) is stable
         hardwareConcurrency: navigator.hardwareConcurrency || 4
@@ -92,7 +89,6 @@ class FingerprintGenerator {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       language: navigator.language,
       platform: navigator.platform,
-      languages: navigator.languages ? navigator.languages.join(',') : navigator.language,
       hardwareConcurrency: navigator.hardwareConcurrency || 4
     };
   }

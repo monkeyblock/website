@@ -52,18 +52,42 @@ class WelcomeAttributionBridge {
   }
 
   async recoverAttribution() {
-    // Priority 1: URL Parameters (from extension)
+    // Priority 1: URL Parameters (from extension) - ENHANCED
     const urlParams = new URLSearchParams(window.location.search);
+    
+    // Build complete attribution from URL parameters
     const urlAttribution = {
       userId: urlParams.get('uid'),
       deviceId: urlParams.get('did') || urlParams.get('fp'),
+      fingerprint: urlParams.get('did') || urlParams.get('fp'),
       extensionId: urlParams.get('ext_id'),
-      version: urlParams.get('v')
+      version: urlParams.get('v'),
+      utm: {
+        utm_source: urlParams.get('utm_source'),
+        utm_medium: urlParams.get('utm_medium'),
+        utm_campaign: urlParams.get('utm_campaign'),
+        utm_content: urlParams.get('utm_content'),
+        utm_term: urlParams.get('utm_term')
+      },
+      referrer: urlParams.get('ref'),
+      fromExtension: urlParams.get('ext') === '1'
     };
     
+    // Remove empty UTM values
+    Object.keys(urlAttribution.utm).forEach(key => {
+      if (!urlAttribution.utm[key]) delete urlAttribution.utm[key];
+    });
+    
+    // If we have essential data from URL, use it
     if (urlAttribution.userId && urlAttribution.deviceId) {
-      this.recoveryMethod = 'url_parameters';
+      this.recoveryMethod = 'url_parameters_complete';
+      console.log('[Welcome Attribution] Full attribution from URL parameters');
       return urlAttribution;
+    }
+    
+    // If we only have partial URL data, continue to other sources
+    if (urlAttribution.extensionId || urlAttribution.deviceId) {
+      console.log('[Welcome Attribution] Partial URL data found, checking other sources...');
     }
     
     // Priority 2: localStorage (same domain)

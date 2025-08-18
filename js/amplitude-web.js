@@ -72,7 +72,6 @@ class MonkeyBlockWebTracker {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       language: navigator.language,
       platform: navigator.platform,
-      languages: navigator.languages ? navigator.languages.join(',') : navigator.language,
       hardwareConcurrency: navigator.hardwareConcurrency || 4
     };
     
