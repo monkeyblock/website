@@ -190,7 +190,9 @@ class MonkeyBlockWebTracker {
   setupEventListeners() {
     // Track install button clicks
     document.querySelectorAll('[data-track="install"]').forEach(button => {
-      button.addEventListener('click', () => {
+      button.addEventListener('click', (e) => {
+        // Don't prevent default - let the link work normally
+        // Just track before navigation
         this.trackInstallClick(button);
       });
     });
