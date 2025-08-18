@@ -66,7 +66,7 @@ class MonkeyBlockWebTracker {
       return FingerprintGenerator.generate();
     }
     
-    // Fallback to inline implementation if shared module not loaded
+    // Fallback to EXACT same implementation as shared module
     console.warn('[MB Tracker] FingerprintGenerator not found, using fallback');
     const components = {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -77,12 +77,21 @@ class MonkeyBlockWebTracker {
     };
     
     const fingerprintString = JSON.stringify(components);
-    let hash1 = 0, hash2 = 5381;
     
+    // Generate hash1 with seed 0
+    let hash1 = 0;
     for (let i = 0; i < fingerprintString.length; i++) {
       const char = fingerprintString.charCodeAt(i);
       hash1 = ((hash1 << 5) - hash1) + char;
-      hash2 = ((hash2 << 5) + hash2) + char;
+      hash1 = hash1 & hash1; // Convert to 32-bit integer
+    }
+    
+    // Generate hash2 with seed 5381
+    let hash2 = 5381;
+    for (let i = 0; i < fingerprintString.length; i++) {
+      const char = fingerprintString.charCodeAt(i);
+      hash2 = ((hash2 << 5) - hash2) + char;
+      hash2 = hash2 & hash2; // Convert to 32-bit integer
     }
     
     const fingerprint = `fp_${Math.abs(hash1).toString(36)}_${Math.abs(hash2).toString(36)}`;
@@ -121,16 +130,17 @@ class MonkeyBlockWebTracker {
       console.log('[MB Tracker] ✅ Amplitude initialized successfully');
       this.initialized = true;
       
-      // Set user properties
-      this.amplitude.setUserProperties({
-        source_platform: 'website',
-        landing_fingerprint: this.deviceId,
-        initial_landing: new Date().toISOString(),
-        browser: navigator.userAgent,
-        language: navigator.language,
-        screen_resolution: `${screen.width}x${screen.height}`,
-        viewport_size: `${window.innerWidth}x${window.innerHeight}`
-      });
+      // Set user properties using Identify API (correct way for Browser SDK v2)
+      const identify = new amplitude.Identify();
+      identify.set('source_platform', 'website');
+      identify.set('landing_fingerprint', this.deviceId);
+      identify.set('initial_landing', new Date().toISOString());
+      identify.set('browser', navigator.userAgent);
+      identify.set('language', navigator.language);
+      identify.set('screen_resolution', `${screen.width}x${screen.height}`);
+      identify.set('viewport_size', `${window.innerWidth}x${window.innerHeight}`);
+      
+      this.amplitude.identify(identify);
       
       // Track initial landing
       this.trackLandingVisit();
