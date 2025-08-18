@@ -318,7 +318,8 @@ class MonkeyBlockWebTracker {
           this.amplitude.track('Time on Page Milestone', {
             seconds: seconds,
             scroll_depth: this.maxScrollDepth || 0
-          });        }
+          });
+        }
       }, seconds * 1000);
     });
     
