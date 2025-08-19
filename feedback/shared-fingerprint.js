@@ -19,6 +19,7 @@ class FingerprintGenerator {
   static generate() {
     try {
       // Collect stable browser components
+      // MUST MATCH EXACTLY with extension's background-unified.js!
       const components = {
         // Timezone is very stable and unique enough for grouping
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -33,11 +34,34 @@ class FingerprintGenerator {
         languages: navigator.languages ? navigator.languages.join(',') : navigator.language,
         
         // Hardware concurrency (CPU cores) is stable
-        hardwareConcurrency: navigator.hardwareConcurrency || 4
+        hardwareConcurrency: navigator.hardwareConcurrency || 4,
+        
+        // Cookie settings
+        cookieEnabled: navigator.cookieEnabled,
+        
+        // Do Not Track setting
+        doNotTrack: navigator.doNotTrack || 'unspecified',
+        
+        // Touch support
+        maxTouchPoints: navigator.maxTouchPoints || 0,
+        
+        // Browser vendor info
+        vendor: navigator.vendor,
+        vendorSub: navigator.vendorSub || '',
+        productSub: navigator.productSub || '20030107',
+        
+        // WebDriver detection
+        webdriver: navigator.webdriver || false
       };
+      
+      // Sort keys to ensure consistent order - CRITICAL!
+      const sortedComponents = {};
+      Object.keys(components).sort().forEach(key => {
+        sortedComponents[key] = components[key];
+      });
 
       // Convert to stable string
-      const fingerprintString = JSON.stringify(components);
+      const fingerprintString = JSON.stringify(sortedComponents);
       
       // Generate two hashes for better distribution
       const hash1 = this.generateHash(fingerprintString, 0);

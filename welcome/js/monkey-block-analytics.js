@@ -117,14 +117,29 @@ class MonkeyBlockAnalytics {
       }
       
       // Otherwise use inline implementation
+      // IMPORTANT: Must match EXACTLY with extension's fingerprint generation!
       const components = {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         language: navigator.language,
         platform: navigator.platform,
-        hardwareConcurrency: navigator.hardwareConcurrency || 4
+        languages: navigator.languages ? navigator.languages.join(',') : navigator.language,
+        hardwareConcurrency: navigator.hardwareConcurrency || 4,
+        cookieEnabled: navigator.cookieEnabled,
+        doNotTrack: navigator.doNotTrack || 'unspecified',
+        maxTouchPoints: navigator.maxTouchPoints || 0,
+        vendor: navigator.vendor,
+        vendorSub: navigator.vendorSub || '',
+        productSub: navigator.productSub || '20030107',
+        webdriver: navigator.webdriver || false
       };
       
-      const fingerprintString = JSON.stringify(components);
+      // Sort keys to ensure consistent order (CRITICAL for matching!)
+      const sortedComponents = {};
+      Object.keys(components).sort().forEach(key => {
+        sortedComponents[key] = components[key];
+      });
+      
+      const fingerprintString = JSON.stringify(sortedComponents);
       let hash1 = 0, hash2 = 5381;
       
       for (let i = 0; i < fingerprintString.length; i++) {
