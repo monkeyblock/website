@@ -140,13 +140,15 @@ class MonkeyBlockAnalytics {
       });
       
       const fingerprintString = JSON.stringify(sortedComponents);
+      
+      // Generate two hashes - MUST match extension's implementation exactly!
       let hash1 = 0, hash2 = 5381;
       
       for (let i = 0; i < fingerprintString.length; i++) {
         const char = fingerprintString.charCodeAt(i);
         hash1 = ((hash1 << 5) - hash1) + char;
         hash2 = ((hash2 << 5) + hash2) + char;
-        hash1 = hash1 & hash1;
+        hash1 = hash1 & hash1; // Convert to 32-bit integer
         hash2 = hash2 & hash2;
       }
       

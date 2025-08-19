@@ -64,11 +64,19 @@ class FingerprintGenerator {
       const fingerprintString = JSON.stringify(sortedComponents);
       
       // Generate two hashes for better distribution
-      const hash1 = this.generateHash(fingerprintString, 0);
-      const hash2 = this.generateHash(fingerprintString, 5381);
+      // MUST match extension's implementation exactly!
+      let hash1 = 0, hash2 = 5381;
+      
+      for (let i = 0; i < fingerprintString.length; i++) {
+        const char = fingerprintString.charCodeAt(i);
+        hash1 = ((hash1 << 5) - hash1) + char;
+        hash2 = ((hash2 << 5) + hash2) + char;
+        hash1 = hash1 & hash1; // Convert to 32-bit integer
+        hash2 = hash2 & hash2;
+      }
       
       // Format: fp_hash1_hash2
-      return `fp_${hash1}_${hash2}`;
+      return `fp_${Math.abs(hash1).toString(36)}_${Math.abs(hash2).toString(36)}`;
       
     } catch (error) {
       console.error('[Fingerprint] Generation error:', error);
