@@ -28,6 +28,20 @@ class AmplitudeFeedback {
     try {
       const urlParams = new URLSearchParams(window.location.search);
       
+      // CRITICAL: Get User ID and Device ID from URL parameters FIRST
+      const urlUserId = urlParams.get('uid');
+      const urlDeviceId = urlParams.get('did');
+      
+      if (urlUserId) {
+        this.userId = urlUserId;
+        console.log('[Amplitude Feedback] Using user ID from URL:', this.userId);
+      }
+      
+      if (urlDeviceId) {
+        this.deviceId = urlDeviceId;
+        console.log('[Amplitude Feedback] Using device ID from URL:', this.deviceId);
+      }
+      
       // Priority 1: URL Parameter for install date
       let installDateParam = urlParams.get('install_date');
       if (installDateParam) {
@@ -45,7 +59,6 @@ class AmplitudeFeedback {
       }
       
       // Priority 3: User ID Timestamp for install date (if format user_*_TIMESTAMP_*)
-      const urlUserId = urlParams.get('uid');
       if (!this.installDate && urlUserId) {
         const match = urlUserId.match(/user_[^_]+_(\d{13})/);
         if (match) {
@@ -68,58 +81,62 @@ class AmplitudeFeedback {
       // Calculate days used
       const now = new Date();
       this.daysUsed = Math.max(0, Math.floor((now - this.installDate) / (1000 * 60 * 60 * 24)));
-
-      // Get User ID and Device ID from URL parameters
-      const urlDeviceId = urlParams.get('did');
       
-      if (urlUserId) {
-        this.userId = urlUserId;
-        console.log('[Amplitude Feedback] Got user ID from URL:', this.userId);
-      }
+      // Calculate more precise time metrics for quick uninstalls
+      const timeDiff = now - this.installDate;
+      this.minutesSinceInstall = Math.max(0, Math.floor(timeDiff / (1000 * 60)));
+      this.hoursSinceInstall = Math.max(0, Math.floor(timeDiff / (1000 * 60 * 60)));
+      this.timeSinceInstallMs = Math.max(0, timeDiff); // Raw milliseconds for precise tracking
       
-      if (urlDeviceId) {
-        this.deviceId = urlDeviceId;
-        console.log('[Amplitude Feedback] Got device ID from URL:', this.deviceId);
-      }
+      // Create a human-readable time since install string
+      this.timeSinceInstallFormatted = this.formatTimeSinceInstall(timeDiff);
+      
+      console.log(`[Amplitude Feedback] Time since install: ${this.minutesSinceInstall} minutes (${this.hoursSinceInstall} hours, ${this.daysUsed} days)`);
 
-      // Fallback: Try to get from extension if missing
+      // Only try extension if we still need IDs
       if (!this.userId || !this.deviceId) {
         const extensionData = await this.getDataFromExtension();
         if (extensionData) {
           this.userId = this.userId || extensionData.userId;
           this.deviceId = this.deviceId || extensionData.deviceId;
+          console.log('[Amplitude Feedback] Got missing IDs from extension');
         }
       }
       
-      // Final fallback: Generate IDs with fingerprint
+      // IMPORTANT: Only generate new IDs as absolute last resort
+      // This should almost never happen if extension properly passes IDs
       if (!this.userId) {
+        // Use uninstall prefix to distinguish from regular users
         const fingerprint = await this.generateSimpleFingerprint();
-        this.userId = `uninstall_user_${fingerprint}_${Date.now()}`;
+        const timestamp = Date.now();
+        this.userId = `uninstall_user_${fingerprint}_${timestamp}`;
+        console.warn('[Amplitude Feedback] WARNING: Had to generate new user ID - extension did not pass ID!');
         console.log('[Amplitude Feedback] Generated fallback user ID:', this.userId);
       }
 
       if (!this.deviceId) {
         const fingerprint = await this.generateSimpleFingerprint();
         this.deviceId = fingerprint;
-        console.log('[Amplitude Feedback] Generated fallback device ID (fingerprint):', this.deviceId);
+        console.warn('[Amplitude Feedback] WARNING: Had to generate new device ID - extension did not pass ID!');
+        console.log('[Amplitude Feedback] Generated fallback device ID:', this.deviceId);
       }
 
-      console.log('[Amplitude Feedback] Install date recovery:', {
+      console.log('[Amplitude Feedback] Initialization complete:', {
+        userId: this.userId,
+        deviceId: this.deviceId,
         installDate: this.installDate.toISOString(),
         source: this.installDateSource,
-        daysUsed: this.daysUsed,
-        userId: this.userId,
-        deviceId: this.deviceId
+        daysUsed: this.daysUsed
       });
 
     } catch (error) {
       console.error('[Amplitude Feedback] Init error:', error);
-      // Emergency fallback
+      // Emergency fallback - should never happen
       this.installDate = new Date();
       this.daysUsed = 0;
       this.installDateSource = 'error_fallback';
-      this.userId = `fallback_user_${Date.now()}`;
-      this.deviceId = `fallback_device_${Date.now()}`;
+      this.userId = `error_user_${Date.now()}`;
+      this.deviceId = `error_device_${Date.now()}`;
     }
   }
 
@@ -165,16 +182,38 @@ class AmplitudeFeedback {
     }
     return null;
   }
+  
+  // Format time since install for human readability
+  formatTimeSinceInstall(milliseconds) {
+    const minutes = Math.floor(milliseconds / (1000 * 60));
+    const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+    const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
+    
+    if (minutes < 60) {
+      return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+    } else if (hours < 24) {
+      const remainingMinutes = minutes % 60;
+      return remainingMinutes > 0 
+        ? `${hours} hour${hours !== 1 ? 's' : ''} ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`
+        : `${hours} hour${hours !== 1 ? 's' : ''}`;
+    } else {
+      const remainingHours = hours % 24;
+      return remainingHours > 0
+        ? `${days} day${days !== 1 ? 's' : ''} ${remainingHours} hour${remainingHours !== 1 ? 's' : ''}`
+        : `${days} day${days !== 1 ? 's' : ''}`;
+    }
+  }
 
   async generateSimpleFingerprint() {
     try {
-      // Use unified fingerprint algorithm
+      // Use unified fingerprint algorithm - MUST match extension's fingerprint
+      // IMPORTANT: No navigator.languages array - causes inconsistency!
       const components = {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        language: navigator.language,
+        language: navigator.language,  // Single value, not array
         platform: navigator.platform,
-        languages: navigator.languages ? navigator.languages.join(',') : navigator.language,
         hardwareConcurrency: navigator.hardwareConcurrency || 4
+        // NO navigator.languages - different between contexts
       };
       
       const fingerprintString = JSON.stringify(components);
@@ -221,6 +260,11 @@ class AmplitudeFeedback {
         install_date: this.installDate ? this.installDate.toISOString() : null,
         install_date_source: this.installDateSource,
         days_used: this.daysUsed,
+        // Add more precise time metrics for quick uninstalls
+        time_since_install_minutes: this.minutesSinceInstall,
+        time_since_install_hours: this.hoursSinceInstall,
+        time_since_install_ms: this.timeSinceInstallMs,
+        time_since_install_formatted: this.timeSinceInstallFormatted,
         uninstall_date: new Date().toISOString(),
         extension_version: new URLSearchParams(window.location.search).get('v') || 'unknown',
         event_index: this.eventCount,  // Event index in session

@@ -10,8 +10,13 @@ Wird getrackt wenn die Feedback-Seite geladen wird.
 - `page_type`: 'two_step_feedback'
 - `install_date`: Installations-Datum (aus URL)
 - `days_used`: Anzahl Tage seit Installation
+- `time_since_install_minutes`: Zeit seit Installation in Minuten (für schnelle Deinstallationen)
+- `time_since_install_hours`: Zeit seit Installation in Stunden
+- `time_since_install_ms`: Zeit seit Installation in Millisekunden (für präzise Analysen)
+- `time_since_install_formatted`: Menschenlesbare Zeit (z.B. "2 hours 30 minutes")
 - `uninstall_date`: Aktuelles Datum
 - `extension_version`: Version der Extension
+- `install_date_source`: Quelle des Installationsdatums (url_parameter, extension_message, user_id_timestamp, fallback_estimate)
 
 ---
 
