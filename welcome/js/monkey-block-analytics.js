@@ -118,16 +118,17 @@ class MonkeyBlockAnalytics {
       
       // Otherwise use inline implementation
       // IMPORTANT: Must match EXACTLY with extension's fingerprint generation!
+      // Only use properties that are stable across ALL contexts (Service Worker & Browser)
       const components = {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         language: navigator.language,
         platform: navigator.platform,
         languages: navigator.languages ? navigator.languages.join(',') : navigator.language,
         hardwareConcurrency: navigator.hardwareConcurrency || 4,
-        cookieEnabled: navigator.cookieEnabled,
-        doNotTrack: navigator.doNotTrack || 'unspecified',
+        // REMOVED: cookieEnabled (undefined in Service Worker)
+        // REMOVED: doNotTrack (different values in different contexts)
         maxTouchPoints: navigator.maxTouchPoints || 0,
-        vendor: navigator.vendor,
+        // REMOVED: vendor (undefined in Service Worker)
         vendorSub: navigator.vendorSub || '',
         productSub: navigator.productSub || '20030107',
         webdriver: navigator.webdriver || false

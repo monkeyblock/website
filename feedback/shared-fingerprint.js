@@ -20,6 +20,7 @@ class FingerprintGenerator {
     try {
       // Collect stable browser components
       // MUST MATCH EXACTLY with extension's background-unified.js!
+      // Only use properties that are stable across ALL contexts (Service Worker & Browser)
       const components = {
         // Timezone is very stable and unique enough for grouping
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -36,17 +37,13 @@ class FingerprintGenerator {
         // Hardware concurrency (CPU cores) is stable
         hardwareConcurrency: navigator.hardwareConcurrency || 4,
         
-        // Cookie settings
-        cookieEnabled: navigator.cookieEnabled,
-        
-        // Do Not Track setting
-        doNotTrack: navigator.doNotTrack || 'unspecified',
+        // REMOVED: cookieEnabled (undefined in Service Worker)
+        // REMOVED: doNotTrack (different values in different contexts)
         
         // Touch support
         maxTouchPoints: navigator.maxTouchPoints || 0,
         
-        // Browser vendor info
-        vendor: navigator.vendor,
+        // REMOVED: vendor (undefined in Service Worker)
         vendorSub: navigator.vendorSub || '',
         productSub: navigator.productSub || '20030107',
         
