@@ -447,8 +447,7 @@
         // Fire events when page loads
         window.addEventListener('load', function() {
             setTimeout(function() {
-                rdt('track', 'PageVisit');
-                
+                // Only track Extension_Installed - no redundant PageVisit
                 // Check if we came from the extension
                 const params = new URLSearchParams(window.location.search);
                 if (params.get('ext') === '1' || params.get('fp')) {
@@ -457,6 +456,10 @@
                         value: 1,
                         currency: 'USD'
                     });
+                    console.log('[Reddit] Extension_Installed tracked');
+                } else {
+                    // If accessed directly without installation, track as regular page view
+                    console.log('[Reddit] Welcome page accessed without installation parameters');
                 }
             }, 100);
         });

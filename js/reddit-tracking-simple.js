@@ -67,7 +67,7 @@ class RedditTracking {
    * Helper method for common events
    */
   trackPageView() {
-    this.track('PageVisit');
+    // Only track Landing_Page_View for landing page (no redundant PageVisit)
     this.track('Landing_Page_View');
   }
   

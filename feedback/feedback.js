@@ -33,18 +33,15 @@ let feedbackData = {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async function() {
-    // Track Reddit Pixel events immediately
+    // Track Reddit Pixel event immediately - user reached uninstall page means they uninstalled
     if (typeof rdt !== 'undefined') {
-        // Track page visit
-        rdt('track', 'PageVisit');
-        
-        // Track that user reached uninstall page (immediate signal)
+        // Only track Extension_Uninstalled - no redundant PageVisit or Started events
         rdt('track', 'Custom', {
-            customEventName: 'Extension_Uninstall_Started',
+            customEventName: 'Extension_Uninstalled',
             value: 1,
             currency: 'USD'
         });
-        console.log('[Reddit] Tracked Extension_Uninstall_Started event');
+        console.log('[Reddit] Tracked Extension_Uninstalled event on page load');
     }
     
     // Initialize Amplitude first
@@ -283,15 +280,7 @@ function showThankYou() {
         });
     }
     
-    // Track Reddit Pixel Event for Uninstall
-    if (typeof rdt !== 'undefined') {
-        rdt('track', 'Custom', {
-            customEventName: 'Extension_Uninstalled',
-            value: 1,
-            currency: 'USD'
-        });
-        console.log('[Reddit] Tracked Extension_Uninstalled event');
-    }
+    // Reddit Pixel event already tracked on page load - no need to track again
     
     // Confetti effect (optional)
     if (typeof confetti !== 'undefined') {
