@@ -53,9 +53,7 @@
         // Fire events when page loads
         window.addEventListener('load', function() {
             setTimeout(function() {
-                rdt('track', 'PageVisit');
-                
-                // Track custom Landing Page View event
+                // Only track Landing Page View event (no redundant PageVisit)
                 rdt('track', 'Custom', {
                     customEventName: 'Landing_Page_View',
                     value: 1,
@@ -88,7 +86,7 @@
       for(var p=0;p<u.length;p++){i(l,u[p]);}n.Identify=l;var d=function(){this._q=[];return this};
       var f=["setDeviceId","setUserId","setOptOut","unsetDeviceId","unsetUserId","setTransport","reset"];
       for(var v=0;v<f.length;v++){i(d,f[v]);}n.Config=d;
-      e.amplitude=n;})(window,document);
+      })(window,document);
     </script>
     
     <!-- Shared Fingerprint Generator -->
