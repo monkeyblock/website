@@ -33,6 +33,20 @@ let feedbackData = {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async function() {
+    // Track Reddit Pixel events immediately
+    if (typeof rdt !== 'undefined') {
+        // Track page visit
+        rdt('track', 'PageVisit');
+        
+        // Track that user reached uninstall page (immediate signal)
+        rdt('track', 'Custom', {
+            customEventName: 'Extension_Uninstall_Started',
+            value: 1,
+            currency: 'USD'
+        });
+        console.log('[Reddit] Tracked Extension_Uninstall_Started event');
+    }
+    
     // Initialize Amplitude first
     await initAmplitude();
     
