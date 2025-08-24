@@ -183,9 +183,19 @@ nav {
 .hero-content h1 {
     font-size: 2.8rem;
     font-weight: 800;
-    margin-bottom: 0.75rem;
+    margin-bottom: 2rem;  /* Mehr Abstand ohne Subtitle */
     line-height: 1.1;
     color: var(--text-primary);
+}
+
+/* Erste Zeile "Master Your" kleiner */
+.hero-content h1 {
+    font-size: 2.5rem;  /* Kleiner für "Master Your" */
+}
+
+.hero-content h1 .highlight-green {
+    font-size: 2.8rem;  /* "Screen Time!" größer */
+    display: inline-block;
 }
 
 .hero-content h1 .highlight-time {
@@ -704,5 +714,379 @@ footer {
     
     .ticker-content {
         animation-duration: 15s;
+    }
+}
+
+/* ========================================
+   HERO SECTION IMPROVEMENTS - 2025-01-22
+   ======================================== */
+
+/* Screen Time grün hervorgehoben */
+.hero-content h1 .highlight-green {
+    color: var(--primary-dark);
+    position: relative;
+    display: inline-block;
+    font-weight: 900;
+}
+
+.hero-content h1 .highlight-green::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: -2px;
+    right: -2px;
+    height: 10px;
+    background: linear-gradient(90deg, 
+        var(--accent-color) 0%, 
+        rgba(229, 201, 166, 0.4) 100%);
+    opacity: 0.6;
+    border-radius: 2px;
+    z-index: -1;
+    transform: skewY(-1deg);
+}
+
+/* Feature-Points mit Checkmarks */
+.feature-points {
+    list-style: none;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.feature-points li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    position: relative;
+    padding-left: 28px;
+}
+
+.feature-points li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: rgba(164, 195, 178, 0.15);
+    border-radius: 50%;
+    font-size: 0.7rem;
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+/* Hero CTA Container für Button + Rating */
+.hero-cta {
+    margin-bottom: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;  /* Kein Gap, da Rating unter Button "versteckt" */
+    position: relative;
+}
+
+/* Glossy CTA Button mit Plastik-Effekt - Mac Style - 10% größer */
+.cta-primary-elegant {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.66rem;  /* 10% größer */
+    padding: 0.94rem 2.64rem;  /* 10% größer (war 0.85rem 2.4rem) */
+    background: linear-gradient(180deg, 
+        #b8e6ca 0%,      /* Sehr helles Grün oben */
+        #a5ddb9 10%,     
+        #95d3a8 25%,     
+        #85c998 40%,     
+        #75bf88 60%,     
+        #6ca580 80%,     
+        #5a9370 95%,     
+        #4d8163 100%);   /* Dunkleres Grün ganz unten für definierten Rand */
+    color: white;
+    font-size: 1.045rem;  /* 10% größer (war 0.95rem) */
+    font-weight: 600;
+    letter-spacing: 0.33px;  /* 10% größer */
+    border-radius: 11px;  /* 10% größer */
+    text-decoration: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    transition: all 0.15s ease;
+    animation: gentleBreathe 3s ease-in-out infinite;
+    z-index: 2;  /* Über dem Rating */
+    border: 0.5px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+        /* Äußere Schatten für Tiefe */
+        0 1px 1px rgba(0, 0, 0, 0.08),
+        0 2px 3px rgba(0, 0, 0, 0.1),
+        0 4px 6px rgba(0, 0, 0, 0.11),
+        0 8px 12px rgba(77, 129, 99, 0.15),
+        0 12px 20px rgba(77, 129, 99, 0.1),
+        /* Innere Schatten für Definition */
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Sanfte Atem-Animation */
+@keyframes gentleBreathe {
+    0%, 100% { 
+        transform: scale(1) translateY(0);
+    }
+    50% { 
+        transform: scale(1.015) translateY(-0.5px);
+    }
+}
+
+/* Stärkerer Glossy Shine Overlay - wie Mac Button */
+.cta-primary-elegant::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    height: 45%;
+    background: linear-gradient(180deg,
+        rgba(255, 255, 255, 0.65) 0%,
+        rgba(255, 255, 255, 0.45) 20%,
+        rgba(255, 255, 255, 0.25) 40%,
+        rgba(255, 255, 255, 0.1) 60%,
+        rgba(255, 255, 255, 0.05) 80%,
+        rgba(255, 255, 255, 0) 100%);
+    border-radius: 10px 10px 33px 33px / 10px 10px 16.5px 16.5px;  /* 10% größer */
+    pointer-events: none;
+}
+
+/* Hover State mit stärkerem Effekt */
+.cta-primary-elegant:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(180deg, 
+        #c0ebd1 0%,      /* Noch helleres Grün beim Hover */
+        #addfc1 10%,     
+        #9dd6b0 25%,     
+        #8dcca0 40%,     
+        #7dc290 60%,     
+        #74a888 80%,     
+        #629678 95%,     
+        #55846b 100%);
+    box-shadow: 
+        0 2px 2px rgba(0, 0, 0, 0.08),
+        0 3px 4px rgba(0, 0, 0, 0.1),
+        0 6px 8px rgba(0, 0, 0, 0.11),
+        0 10px 15px rgba(77, 129, 99, 0.18),
+        0 15px 25px rgba(77, 129, 99, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Active State */
+.cta-primary-elegant:active {
+    transform: translateY(0);
+    background: linear-gradient(180deg, 
+        #a8d9bb 0%,
+        #95d0a8 10%,
+        #85c698 25%,
+        #75bc88 40%,
+        #65b278 60%,
+        #5c9870 80%,
+        #4a8660 95%,
+        #3d7453 100%);
+    box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.1),
+        0 2px 3px rgba(77, 129, 99, 0.15),
+        inset 0 1px 2px rgba(0, 0, 0, 0.15),
+        inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Hover Animation mit Bounce */
+@keyframes buttonBounce {
+    0% { transform: translateY(-1px) scale(1); }
+    50% { transform: translateY(-2px) scale(1.01); }
+    100% { transform: translateY(-1px) scale(1); }
+}
+
+.cta-primary-elegant:hover {
+    transform: translateY(-1px);
+    animation: buttonBounce 0.6s ease-in-out, gentleBreathe 3s ease-in-out infinite;
+    background: linear-gradient(180deg, 
+        #c0ebd1 0%,      /* Noch helleres Grün beim Hover */
+        #addfc1 10%,     
+        #9dd6b0 25%,     
+        #8dcca0 40%,     
+        #7dc290 60%,     
+        #74a888 80%,     
+        #629678 95%,     
+        #55846b 100%);
+    box-shadow: 
+        0 2px 2px rgba(0, 0, 0, 0.08),
+        0 3px 4px rgba(0, 0, 0, 0.1),
+        0 6px 8px rgba(0, 0, 0, 0.11),
+        0 10px 15px rgba(77, 129, 99, 0.18),
+        0 15px 25px rgba(77, 129, 99, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cta-primary-elegant:active {
+    transform: translateY(0);
+    animation: gentleBreathe 3s ease-in-out infinite;
+    background: linear-gradient(180deg, 
+        #a8d9bb 0%,
+        #95d0a8 10%,
+        #85c698 25%,
+        #75bc88 40%,
+        #65b278 60%,
+        #5c9870 80%,
+        #4a8660 95%,
+        #3d7453 100%);
+    box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.1),
+        0 2px 3px rgba(77, 129, 99, 0.15),
+        inset 0 1px 2px rgba(0, 0, 0, 0.15),
+        inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Pulse Animation im Hintergrund */
+.cta-primary-elegant::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 11px;  /* 10% größer */
+    background: var(--primary-color);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    z-index: -1;
+    transition: all 0.6s;
+}
+
+.cta-primary-elegant:hover::after {
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+    opacity: 0.15;
+}
+
+/* Rating Badge - unter dem Button "versteckt" - 10% größer */
+.hero-cta .rating-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;  /* 10% größer */
+    padding: 0.39rem 0.88rem;  /* 10% größer */
+    padding-top: 15.4px;  /* 10% größer */
+    background: #efdec9;  /* Beige wie gewünscht */
+    border-radius: 0 0 6.6px 6.6px;  /* 10% größer */
+    box-shadow: none;
+    border: none;
+    margin-top: -8.8px;  /* 10% größer */
+    margin-left: 33px;  /* 10% größer */
+    position: relative;
+    z-index: 1;  /* Unter dem Button (z-index: 2) */
+}
+
+.hero-cta .rating-badge .stars {
+    color: #daa863;  /* Goldene Sterne */
+    font-size: 0.99rem;  /* 10% größer (war 0.9rem) */
+    letter-spacing: 1.1px;  /* 10% größer */
+}
+
+.hero-cta .rating-badge span {
+    font-size: 0.88rem;  /* 10% größer (war 0.8rem) */
+    color: #8b7968;
+    font-weight: 500;
+}
+
+/* Trust Badges unter dem Video */
+.hero-video {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.trust-badges-video {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;  /* Kleiner Abstand zum Video */
+}
+
+.trust-badges-video .trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.6rem;
+    background: rgba(164, 195, 178, 0.12);
+    border: 1px solid rgba(164, 195, 178, 0.25);
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+/* Größeres Video mit elegantem Rahmen - 10% größer */
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 770px;  /* 10% größer (war 700px) */
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    border-radius: 17.6px;  /* 10% größer */
+    overflow: hidden;
+    box-shadow: 
+        0 11px 33px rgba(0, 0, 0, 0.1),  /* 10% größer */
+        0 1px 2px rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.9);  /* Leicht transparentes Weiß */
+    padding: 8.8px;  /* 10% größer */
+}
+
+.video-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 17.6px;  /* 10% größer */
+    padding: 1.1px;  /* 10% größer */
+    background: linear-gradient(135deg, 
+        rgba(127, 182, 147, 0.4),    /* Grünlicher und transparenter */
+        rgba(164, 195, 178, 0.3));
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.video-container:hover {
+    transform: scale(1.02);
+    box-shadow: 
+        0 22px 44px rgba(0, 0, 0, 0.15),  /* 10% größer */
+        0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Responsive für neue Features */
+@media (max-width: 768px) {
+    .feature-points {
+        text-align: left;
+        max-width: 400px;
+        margin: 0 auto 2rem;
+    }
+    
+    .hero-cta {
+        align-items: center;
+        width: 100%;
+    }
+    
+    .video-container {
+        max-width: 500px;
     }
 }
