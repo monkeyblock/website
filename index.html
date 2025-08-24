@@ -103,8 +103,11 @@
     <!-- Navigation -->
     <nav>
         <div class="logo">
-            <span>🐵</span>
-            <span>Monkey Block</span>
+            <img src="/media/monkey-block.png" alt="Monkey Block Logo" class="logo-img">
+            <div class="logo-text">
+                <span class="logo-name">Monkey Block</span>
+                <span class="logo-tagline">Stop Scrolling. Start Living.</span>
+            </div>
         </div>
         <div class="nav-links">
             <a href="#benefits">Benefits</a>
@@ -115,23 +118,67 @@
     </nav>
     <!-- Hero -->
     <section class="hero" data-section="hero">
-        <div class="badge">🎉 Just Launched! Be among the first to try it</div>
         <h1>Take Back Control of Your Time</h1>
-        <p class="subtitle">The friendly productivity companion that helps you stay focused and mindful of your social media usage</p>
-        <div class="hero-buttons">
-            <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" class="cta-primary" data-track="install" data-location="hero-primary">🚀 Add to Chrome - It's Free</a>
-            <a href="#features" class="cta-secondary">See How It Works</a>
+        <p class="subtitle">Smart time limits for social media that actually work</p>
+        <div class="trust-badges">
+            <span class="trust-badge">✓ 100% Free</span>
+            <span class="trust-badge">✓ No Account Required</span>
+            <span class="trust-badge">✓ Private & Secure</span>
         </div>
         
-        <div class="timer-preview">
-            <span class="preview-label">Live Timer Preview</span>
-            <div class="focus-timer" id="demo-timer">
-                <div class="timer-display">15:42</div>
-                <div class="timer-progress">
-                    <div class="timer-progress-bar"></div>
-                </div>
-                <div class="timer-site">instagram.com</div>
+        <div class="video-preview">
+            <span class="preview-label">See Monkey Block in Action</span>
+            <div class="video-container">
+                <script src="https://fast.wistia.com/player.js" async></script>
+                <script src="https://fast.wistia.com/embed/kjjom3nx0l.js" async type="module"></script>
+                <style>
+                    wistia-player[media-id='kjjom3nx0l']:not(:defined) { 
+                        background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/kjjom3nx0l/swatch'); 
+                        display: block; 
+                        filter: blur(5px); 
+                        padding-top: 71.25%; 
+                    }
+                </style>
+                <wistia-player media-id="kjjom3nx0l" aspect="1.4035087719298245"></wistia-player>
             </div>
+        </div>
+        
+        <div class="hero-buttons">
+            <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" class="cta-primary" data-track="install" data-location="hero-primary">🚀 Add to Chrome - It's Free</a>
+        </div>
+    </section>
+
+    <!-- Supported Sites -->
+    <section class="supported-sites">
+        <div class="container">
+            <p class="sites-label">Works with all your favorite sites</p>
+            <div class="sites-logos">
+                <div class="site-logo">
+                    <img src="/icons/youtube.png" alt="YouTube">
+                    <span>YouTube</span>
+                </div>
+                <div class="site-logo">
+                    <img src="/icons/instagram.png" alt="Instagram">
+                    <span>Instagram</span>
+                </div>
+                <div class="site-logo">
+                    <img src="/icons/facebook.png" alt="Facebook">
+                    <span>Facebook</span>
+                </div>
+                <div class="site-logo">
+                    <img src="/icons/x.png" alt="X">
+                    <span>X (Twitter)</span>
+                </div>
+                <div class="site-logo">
+                    <img src="/icons/reddit.png" alt="Reddit">
+                    <span>Reddit</span>
+                </div>
+                <div class="site-logo">
+                    <img src="/icons/tiktok.png" alt="TikTok">
+                    <span>TikTok</span>
+                </div>
+            </div>
+            <p class="sites-note">+ Any custom website you want to add</p>
         </div>
     </section>
 
@@ -193,31 +240,41 @@
             </div>
         </div>
     </section>
-    <!-- Stats -->
-    <section class="stats">
+    
+    <!-- Social Proof -->
+    <section class="social-proof" id="reviews">
         <div class="container">
-            <h2>Join the Growing Community</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <h3>New!</h3>
-                    <p>Just Launched</p>
+            <h2>What Users Are Saying</h2>
+            <p class="section-subtitle">Real reviews from the Chrome Web Store</p>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="review-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">"I increased my productivity once I realized how much time I spent on low quality websites! By far the easiest, best looking and most customizable chrome extension for managing screen time."</p>
+                    <div class="review-author">
+                        <strong>Asuka Nishimura</strong>
+                        <span>Chrome Web Store Review</span>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <h3>Free</h3>
-                    <p>Core Features</p>
+                <div class="review-card">
+                    <div class="review-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">"I tried literally every website blocker and finally this works the way I want it to. I love that it's free and very easy to use."</p>
+                    <div class="review-author">
+                        <strong>Mini Su</strong>
+                        <span>Chrome Web Store Review</span>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <h3>All</h3>
-                    <p>Major Social Media</p>
-                </div>
-                <div class="stat-item">
-                    <h3>3</h3>
-                    <p>Blocking Modes</p>
+                <div class="review-card">
+                    <div class="review-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">"It really helped me. I set the timer to 25 min for youtube and when it's over, I stop watching because it gets blocked. I would recommend this extension to everyone!"</p>
+                    <div class="review-author">
+                        <strong>Juan Ana</strong>
+                        <span>Chrome Web Store Review</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-
+    
     <!-- FAQ -->
     <section class="faq" id="faq" data-section="faq">
         <div class="container">
@@ -242,13 +299,14 @@
             </div>
         </div>
     </section>
+    
     <!-- CTA -->
     <section class="cta" data-section="cta">
         <div class="container">
-            <h2>Be an Early Adopter</h2>
-            <p>Help us build the best productivity tool by being one of our first users</p>
-            <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" class="cta-button" data-track="install" data-location="bottom-cta">🐵 Install Monkey Block Now</a>
-            <p class="cta-note">No credit card required • 2-minute setup</p>
+            <h2>Ready to Take Control?</h2>
+            <p>Join thousands of users who are already more productive with Monkey Block</p>
+            <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" class="cta-button" data-track="install" data-location="bottom-cta">🚀 Install Monkey Block Now</a>
+            <p class="cta-note">Free to use • 2-minute setup • No account required</p>
         </div>
     </section>
 
