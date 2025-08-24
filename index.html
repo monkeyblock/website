@@ -102,83 +102,183 @@
 <body>
     <!-- Navigation -->
     <nav>
-        <div class="logo">
-            <img src="/media/monkey-block.png" alt="Monkey Block Logo" class="logo-img">
-            <div class="logo-text">
-                <span class="logo-name">Monkey Block</span>
-                <span class="logo-tagline">Stop Scrolling. Start Living.</span>
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <img src="/media/monkey-block.png" alt="Monkey Block Logo" class="logo-img">
+                    <div class="logo-text">
+                        <span class="logo-name">Monkey Block</span>
+                        <span class="logo-tagline">Stop Scrolling. Start Living.</span>
+                    </div>
+                </div>
+                <div class="nav-links">
+                    <a href="#benefits">Benefits</a>
+                    <a href="#features">Features</a>
+                    <a href="#faq">FAQ</a>
+                </div>
             </div>
-        </div>
-        <div class="nav-links">
-            <a href="#benefits">Benefits</a>
-            <a href="#features">Features</a>
-            <a href="#faq">FAQ</a>
-            <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" target="_blank" class="install-btn" data-track="install" data-location="navigation">Install Free</a>
+            <div class="nav-cta">
+                <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" target="_blank" class="install-btn" data-track="install" data-location="navigation">Add to Chrome - Free</a>
+            </div>
         </div>
     </nav>
     <!-- Hero -->
     <section class="hero" data-section="hero">
-        <h1>Take Back Control of Your Time</h1>
-        <p class="subtitle">Smart time limits for social media that actually work</p>
-        <div class="trust-badges">
-            <span class="trust-badge">✓ 100% Free</span>
-            <span class="trust-badge">✓ No Account Required</span>
-            <span class="trust-badge">✓ Private & Secure</span>
-        </div>
-        
-        <div class="video-preview">
-            <span class="preview-label">See Monkey Block in Action</span>
-            <div class="video-container">
-                <script src="https://fast.wistia.com/player.js" async></script>
-                <script src="https://fast.wistia.com/embed/kjjom3nx0l.js" async type="module"></script>
-                <style>
-                    wistia-player[media-id='kjjom3nx0l']:not(:defined) { 
-                        background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/kjjom3nx0l/swatch'); 
-                        display: block; 
-                        filter: blur(5px); 
-                        padding-top: 71.25%; 
-                    }
-                </style>
-                <wistia-player media-id="kjjom3nx0l" aspect="1.4035087719298245"></wistia-player>
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="trust-badges">
+                    <span class="trust-badge">✓ 100% Free</span>
+                    <span class="trust-badge">✓ No Account Required</span>
+                    <span class="trust-badge">✓ Private & Secure</span>
+                </div>
+                <h1>Take Back Control of Your Time</h1>
+                <p class="subtitle">Smart time limits for social media that actually work</p>
+                <div class="hero-cta">
+                    <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" class="cta-primary" data-track="install" data-location="hero-primary">Add to Chrome - It's Free</a>
+                </div>
+                <div class="rating-badge">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <span>Rated 5 stars in Chrome Store</span>
+                </div>
             </div>
-        </div>
-        
-        <div class="hero-buttons">
-            <a href="https://chromewebstore.google.com/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe" class="cta-primary" data-track="install" data-location="hero-primary">🚀 Add to Chrome - It's Free</a>
+            <div class="hero-video">
+                <div class="video-container">
+                    <script src="https://fast.wistia.com/player.js" async></script>
+                    <script src="https://fast.wistia.com/embed/kjjom3nx0l.js" async type="module"></script>
+                    <style>
+                        wistia-player[media-id='kjjom3nx0l']:not(:defined) { 
+                            background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/kjjom3nx0l/swatch'); 
+                            display: block; 
+                            filter: blur(5px); 
+                            padding-top: 71.25%; 
+                        }
+                    </style>
+                    <wistia-player media-id="kjjom3nx0l" wistia-popover="true" aspect="1.4035087719298245"></wistia-player>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Supported Sites -->
-    <section class="supported-sites">
-        <div class="container">
-            <p class="sites-label">Works with all your favorite sites</p>
-            <div class="sites-logos">
-                <div class="site-logo">
+    <!-- Logo Ticker -->
+    <section class="logo-ticker">
+        <div class="ticker-container">
+            <div class="ticker-content">
+                <div class="ticker-item">
                     <img src="/icons/youtube.png" alt="YouTube">
                     <span>YouTube</span>
                 </div>
-                <div class="site-logo">
+                <div class="ticker-item">
                     <img src="/icons/instagram.png" alt="Instagram">
                     <span>Instagram</span>
                 </div>
-                <div class="site-logo">
+                <div class="ticker-item">
                     <img src="/icons/facebook.png" alt="Facebook">
                     <span>Facebook</span>
                 </div>
-                <div class="site-logo">
+                <div class="ticker-item">
                     <img src="/icons/x.png" alt="X">
                     <span>X (Twitter)</span>
                 </div>
-                <div class="site-logo">
+                <div class="ticker-item">
                     <img src="/icons/reddit.png" alt="Reddit">
                     <span>Reddit</span>
                 </div>
-                <div class="site-logo">
+                <div class="ticker-item">
+                    <img src="/icons/tiktok.png" alt="TikTok">
+                    <span>TikTok</span>
+                </div>
+                <!-- Duplicate for seamless loop -->
+                <div class="ticker-item">
+                    <img src="/icons/youtube.png" alt="YouTube">
+                    <span>YouTube</span>
+                </div>
+                <div class="ticker-item">
+                    <img src="/icons/instagram.png" alt="Instagram">
+                    <span>Instagram</span>
+                </div>
+                <div class="ticker-item">
+                    <img src="/icons/facebook.png" alt="Facebook">
+                    <span>Facebook</span>
+                </div>
+                <div class="ticker-item">
+                    <img src="/icons/x.png" alt="X">
+                    <span>X (Twitter)</span>
+                </div>
+                <div class="ticker-item">
+                    <img src="/icons/reddit.png" alt="Reddit">
+                    <span>Reddit</span>
+                </div>
+                <div class="ticker-item">
                     <img src="/icons/tiktok.png" alt="TikTok">
                     <span>TikTok</span>
                 </div>
             </div>
-            <p class="sites-note">+ Any custom website you want to add</p>
+        </div>
+    </section>
+
+    <!-- Review Cards -->
+    <section class="review-cards">
+        <div class="reviews-container">
+            <div class="review-card compact">
+                <p>"By far the easiest, best looking and most customizable extension for managing screen time"</p>
+                <div class="review-header">
+                    <div class="reviewer-avatar">AN</div>
+                    <div class="reviewer-info">
+                        <strong>Asuka Nishimura</strong>
+                        <span>Chrome Store Review</span>
+                    </div>
+                </div>
+            </div>
+            <div class="review-card compact">
+                <p>"I tried literally every website blocker and finally this works the way I want it to"</p>
+                <div class="review-header">
+                    <div class="reviewer-avatar">MS</div>
+                    <div class="reviewer-info">
+                        <strong>Mini Su</strong>
+                        <span>Chrome Store Review</span>
+                    </div>
+                </div>
+            </div>
+            <div class="review-card compact">
+                <p>"I would recommend this extension to everyone! It really helped me"</p>
+                <div class="review-header">
+                    <div class="reviewer-avatar">JA</div>
+                    <div class="reviewer-info">
+                        <strong>Juan Ana</strong>
+                        <span>Chrome Store Review</span>
+                    </div>
+                </div>
+            </div>
+            <div class="review-card compact">
+                <p>"I love the scheduling feature, which helps me stay disciplined during work hours"</p>
+                <div class="review-header">
+                    <div class="reviewer-avatar">HJ</div>
+                    <div class="reviewer-info">
+                        <strong>Harry James</strong>
+                        <span>Chrome Store Review</span>
+                    </div>
+                </div>
+            </div>
+            <div class="review-card compact">
+                <p>"I use it to block social media during study sessions, and it works like a charm"</p>
+                <div class="review-header">
+                    <div class="reviewer-avatar">AB</div>
+                    <div class="reviewer-info">
+                        <strong>Aristide Berenger</strong>
+                        <span>Chrome Store Review</span>
+                    </div>
+                </div>
+            </div>
+            <div class="review-card compact">
+                <p>"Easy to use and gets the job done"</p>
+                <div class="review-header">
+                    <div class="reviewer-avatar">ED</div>
+                    <div class="reviewer-info">
+                        <strong>El'mohd Digital</strong>
+                        <span>Chrome Store Review</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -236,40 +336,6 @@
                 <div class="feature-card">
                     <h3>📈 Analytics</h3>
                     <p>Track your progress with detailed statistics and beautiful charts.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Social Proof -->
-    <section class="social-proof" id="reviews">
-        <div class="container">
-            <h2>What Users Are Saying</h2>
-            <p class="section-subtitle">Real reviews from the Chrome Web Store</p>
-            <div class="reviews-grid">
-                <div class="review-card">
-                    <div class="review-stars">⭐⭐⭐⭐⭐</div>
-                    <p class="review-text">"I increased my productivity once I realized how much time I spent on low quality websites! By far the easiest, best looking and most customizable chrome extension for managing screen time."</p>
-                    <div class="review-author">
-                        <strong>Asuka Nishimura</strong>
-                        <span>Chrome Web Store Review</span>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="review-stars">⭐⭐⭐⭐⭐</div>
-                    <p class="review-text">"I tried literally every website blocker and finally this works the way I want it to. I love that it's free and very easy to use."</p>
-                    <div class="review-author">
-                        <strong>Mini Su</strong>
-                        <span>Chrome Web Store Review</span>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="review-stars">⭐⭐⭐⭐⭐</div>
-                    <p class="review-text">"It really helped me. I set the timer to 25 min for youtube and when it's over, I stop watching because it gets blocked. I would recommend this extension to everyone!"</p>
-                    <div class="review-author">
-                        <strong>Juan Ana</strong>
-                        <span>Chrome Web Store Review</span>
-                    </div>
                 </div>
             </div>
         </div>
