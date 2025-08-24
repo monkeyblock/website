@@ -175,8 +175,8 @@ nav {
     margin: 0 auto;
     padding: 0 2rem;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2.5rem;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 2rem;
     align-items: center;
 }
 
@@ -228,6 +228,18 @@ nav {
     display: inline-block;
     transition: all 0.3s;
     box-shadow: 0 4px 12px rgba(127, 182, 147, 0.3);
+    animation: subtle-pulse 4s ease-in-out infinite;
+}
+
+@keyframes subtle-pulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(127, 182, 147, 0.3);
+    }
+    50% { 
+        transform: scale(1.02);
+        box-shadow: 0 6px 16px rgba(127, 182, 147, 0.4);
+    }
 }
 
 .cta-primary:hover {
@@ -240,21 +252,24 @@ nav {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.5rem 0.9rem;
-    background: rgba(255, 255, 255, 0.9);
+    padding: 0.6rem 1rem;
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 10px;
-    box-shadow: 0 2px 6px var(--shadow-light);
-    border: 1px solid var(--border-color);
+    box-shadow: 
+        0 2px 8px rgba(229, 201, 166, 0.2),
+        0 0 20px rgba(229, 201, 166, 0.1);
+    border: 1px solid rgba(229, 201, 166, 0.3);
 }
 .rating-badge .stars {
     color: #e5c9a6;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    letter-spacing: 2px;
 }
 
 .rating-badge span {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--text-secondary);
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .hero-video {
@@ -267,7 +282,7 @@ nav {
 .video-container {
     position: relative;
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     cursor: pointer;
     transition: transform 0.3s ease;
     border-radius: 14px;
@@ -333,12 +348,12 @@ nav {
     width: 28px;
     height: 28px;
     object-fit: contain;
-    filter: sepia(30%) saturate(0.5) hue-rotate(10deg) opacity(0.7);
+    filter: grayscale(100%) brightness(0.3) sepia(20%) hue-rotate(30deg) opacity(0.5);
     transition: filter 0.3s ease;
 }
 
 .ticker-item:hover img {
-    filter: sepia(20%) saturate(0.7) hue-rotate(10deg) opacity(0.85);
+    filter: grayscale(100%) brightness(0.4) sepia(20%) hue-rotate(30deg) opacity(0.7);
 }
 
 .ticker-item span {
