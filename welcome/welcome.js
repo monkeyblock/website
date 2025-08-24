@@ -148,6 +148,17 @@ class WelcomePage {
         }
       } else {
         console.log('[Welcome] No matching attribution data found');
+        
+        // Track when no attribution data is found
+        if (typeof amplitude !== 'undefined') {
+          amplitude.track('Attribution Not Found', {
+            fingerprint: fingerprint,
+            has_user_id: !!userId,
+            has_attribution: Object.keys(attribution).length > 0,
+            is_recent: isRecent,
+            fingerprint_match: !!fpData.user_id
+          });
+        }
       }
       
     } catch (error) {
@@ -331,10 +342,12 @@ class WelcomePage {
     
     // Track installation source
     if (isFromExtension) {
-      this.trackEvent('Extension Installed - Welcome', {
+      this.trackEvent('Extension Installed', {
+        attribution_source: 'welcome_page',
         version: params.get('v'),
         fingerprint: params.get('fp'),
-        extension_id: params.get('ext_id')
+        extension_id: params.get('ext_id'),
+        install_count: 1  // Welcome page is shown on first install
       });
     }
     
@@ -347,13 +360,57 @@ class WelcomePage {
     let tracked30s = false;
     let tracked60s = false;
     let clickedDashboard = false;
+    let maxScrollDepth = 0;
+    let scrolledToBottom = false;
+    
+    // Track scroll depth
+    const trackScrollDepth = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // Calculate scroll percentage
+      const scrollPercentage = Math.round((scrollTop + windowHeight) / documentHeight * 100);
+      maxScrollDepth = Math.max(maxScrollDepth, scrollPercentage);
+      
+      // Check if user scrolled to bottom (within 5% of bottom)
+      if (scrollPercentage >= 95 && !scrolledToBottom) {
+        scrolledToBottom = true;
+        this.trackEvent('Welcome Page - Scrolled to Bottom', {
+          time_to_bottom: Math.floor((Date.now() - startTime) / 1000),
+          scroll_depth: scrollPercentage
+        });
+      }
+      
+      // Track milestone scroll depths (25%, 50%, 75%)
+      const milestones = [25, 50, 75];
+      milestones.forEach(milestone => {
+        if (scrollPercentage >= milestone && !this[`tracked${milestone}Scroll`]) {
+          this[`tracked${milestone}Scroll`] = true;
+          this.trackEvent(`Welcome Page - ${milestone}% Scroll`, {
+            time_to_milestone: Math.floor((Date.now() - startTime) / 1000)
+          });
+        }
+      });
+    };
+    
+    // Debounced scroll tracking
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(trackScrollDepth, 100);
+    });
+    
+    // Initial scroll check
+    trackScrollDepth();
     
     // Track 30 second engagement
     setTimeout(() => {
       if (!tracked30s) {
         tracked30s = true;
         this.trackEvent('Welcome Page - 30s Engagement', {
-          time_on_page: 30
+          time_on_page: 30,
+          max_scroll_depth: maxScrollDepth
         });
       }
     }, 30000);
@@ -363,7 +420,8 @@ class WelcomePage {
       if (!tracked60s) {
         tracked60s = true;
         this.trackEvent('Welcome Page - 60s Engagement', {
-          time_on_page: 60
+          time_on_page: 60,
+          max_scroll_depth: maxScrollDepth
         });
       }
     }, 60000);
@@ -381,7 +439,9 @@ class WelcomePage {
       const timeOnPage = Math.floor((Date.now() - startTime) / 1000);
       this.trackEvent('Welcome Page - Left', {
         time_on_page: timeOnPage,
-        clicked_dashboard: clickedDashboard
+        clicked_dashboard: clickedDashboard,
+        max_scroll_depth: maxScrollDepth,
+        scrolled_to_bottom: scrolledToBottom
       });
     });
   }
