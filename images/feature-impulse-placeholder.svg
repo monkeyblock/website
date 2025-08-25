@@ -1,0 +1,6 @@
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="400" fill="#f0f0f0"/>
+  <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#999" font-family="system-ui" font-size="24">
+    Impulse Check Screenshot
+  </text>
+</svg>
