@@ -1555,19 +1555,19 @@ footer {
 
 .feature-badge {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 295px; /* Position auf Höhe der Überschrift */
+    right: 20px; /* Rechts ausgerichtet */
     z-index: 10;
     display: inline-block;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.8rem;
     background: linear-gradient(135deg, #7fb693, #d4b896);
     color: white;
     border-radius: 20px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
-    box-shadow: 0 4px 12px rgba(127, 182, 147, 0.3);
+    box-shadow: 0 3px 10px rgba(127, 182, 147, 0.25);
 }
 
 .feature-screenshot {
@@ -1639,5 +1639,74 @@ footer {
     .feature-item p {
         margin: 0 1.2rem 1.2rem;
         font-size: 0.9rem;
+    }
+}
+/* Features CTA Section */
+.features-cta {
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, 
+        rgba(164, 195, 178, 0.05),
+        rgba(229, 201, 166, 0.05));
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+}
+
+.features-cta h2 {
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.features-cta p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-button-large {
+    display: inline-block;
+    background: linear-gradient(135deg, #7fb693, #6fa583);
+    color: white;
+    padding: 1.2rem 2.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    box-shadow: 
+        0 6px 20px rgba(127, 182, 147, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    animation: subtle-pulse 4s ease-in-out infinite;
+}
+
+.cta-button-large:hover {
+    background: linear-gradient(135deg, #6fa583, #5f9573);
+    transform: translateY(-3px);
+    box-shadow: 
+        0 8px 25px rgba(127, 182, 147, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cta-subtitle {
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* Remove old benefits-compact section */
+.benefits-compact {
+    display: none;
+}
+
+/* Adjust feature badge position for mobile */
+@media (max-width: 480px) {
+    .feature-badge {
+        top: 255px;
+        right: 15px;
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
     }
 }
