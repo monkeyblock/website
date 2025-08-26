@@ -161,7 +161,7 @@
         
         /* Pin Tutorial Section */
         .pin-tutorial {
-            background: linear-gradient(135deg, var(--accent-color), rgba(229, 201, 166, 0.3));
+            background: rgb(237, 224, 209);
             border-radius: 16px;
             padding: 30px;
             margin: 40px auto;
@@ -326,15 +326,16 @@
         
         .feature-screenshot {
             width: 100%;
-            height: 288px; /* Maintains 1000:720 ratio for 400px width */
+            aspect-ratio: 1000 / 720; /* Korrektes Verhältnis statt fixer Höhe */
             overflow: hidden;
             background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+            border-radius: 12px 12px 0 0; /* Nur oben abgerundet */
         }
         
         .feature-screenshot img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* contain statt cover - zeigt das ganze Bild */
             transition: transform 0.3s ease;
         }
         

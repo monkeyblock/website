@@ -1659,20 +1659,21 @@ footer {
 
 .feature-screenshot {
     width: 100%;
-    height: 280px;
+    aspect-ratio: 1000 / 720;  /* Korrektes Verhältnis 1000:720 */
     overflow: hidden;
     background: linear-gradient(135deg, #f5f7f9, #e8ebed);
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    border-radius: 12px 12px 0 0;  /* Nur oben abgerundet */
 }
 
 .feature-screenshot img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: top center;
+    object-fit: contain;  /* contain statt cover - zeigt das ganze Bild */
+    object-position: center center;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1714,7 +1715,7 @@ footer {
     }
     
     .feature-screenshot {
-        height: 240px;
+        aspect-ratio: 1000 / 720;  /* Verhältnis beibehalten auch auf Mobile */
     }
 }
 
