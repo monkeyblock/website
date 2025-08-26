@@ -1,0 +1,482 @@
+/* ============================================
+   MONKEY BLOCK - LANDING PAGE ANIMATIONS
+   Modern, clean animations for enhanced UX
+   ============================================ */
+
+/* ============================================
+   1. HERO SECTION ANIMATIONS
+   ============================================ */
+
+/* Headline Typewriter Effect */
+@keyframes fadeInWord {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-content h1 {
+  animation: fadeInWord 0.8s ease-out;
+}
+
+.hero-content h1 .highlight-green {
+  display: inline-block;
+  animation: fadeInWord 1s ease-out 0.3s both;
+  position: relative;
+}
+
+/* Highlight underline animation */
+.hero-content h1 .highlight-green::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: var(--primary-color);
+  animation: expandWidth 0.8s ease-out 0.6s forwards;  /* Früher: von 1.3s auf 0.6s */
+}
+
+@keyframes expandWidth {
+  to {
+    width: 100%;
+  }
+}
+/* Feature List Staggered Animation */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.feature-points li {
+  opacity: 0;
+  animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.feature-points li:nth-child(1) { animation-delay: 0.4s; }
+.feature-points li:nth-child(2) { animation-delay: 0.5s; }
+.feature-points li:nth-child(3) { animation-delay: 0.6s; }
+.feature-points li:nth-child(4) { animation-delay: 0.7s; }
+
+/* CTA Button Pulse Animation */
+@keyframes subtlePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(127, 182, 147, 0.3);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(127, 182, 147, 0.4);
+  }
+}
+
+.cta-primary-elegant {
+  animation: subtlePulse 3s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.cta-primary-elegant:hover {
+  animation: none;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(127, 182, 147, 0.5);
+}
+
+/* Rating Stars Animation */
+@keyframes starPop {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.3) rotate(10deg);  /* Relative Skalierung */
+    opacity: 1;
+  }
+  60% {
+    transform: scale(0.9) rotate(-5deg);
+  }
+  80% {
+    transform: scale(1.05) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);  /* Zurück zur normalen Größe */
+    opacity: 1;
+  }
+}
+
+.rating-badge {
+  animation: fadeInWord 0.8s ease-out 1.2s both;  /* Badge erscheint bei 1.2s */
+}
+
+.rating-badge .stars {
+  display: inline-block;
+  letter-spacing: 2px;
+}
+
+/* Animate each star individually with glow */
+@keyframes starGlow {
+  0%, 100% { 
+    filter: brightness(1); 
+  }
+  50% { 
+    filter: brightness(1.3) drop-shadow(0 0 5px gold); 
+  }
+}
+
+/* Additional golden pulse for emphasis */
+@keyframes goldPulse {
+  0% {
+    text-shadow: 0 0 0 transparent;
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8),
+                 0 0 25px rgba(255, 215, 0, 0.5),
+                 0 0 35px rgba(255, 215, 0, 0.3);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+  }
+}
+
+.stars-animated {
+  display: inline-flex;
+  align-items: center;
+  letter-spacing: 4px;  /* Größerer Abstand zwischen Sternen */
+  vertical-align: middle;  /* Auf gleicher Höhe mit Text */
+  font-size: 1.3rem !important;  /* Finale Größe beibehalten */
+  height: 100%;
+}
+
+.stars-animated span {
+  display: inline-block;
+  font-size: inherit !important;  /* Größe vom Parent erben */
+  animation: starPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) backwards,
+             goldPulse 0.6s ease-out backwards;
+  vertical-align: middle;
+}
+
+.stars-animated span:nth-child(1) { animation-delay: 1.8s; }
+.stars-animated span:nth-child(2) { animation-delay: 1.95s; }  /* 0.15s Abstand */
+.stars-animated span:nth-child(3) { animation-delay: 2.1s; }   /* 0.15s Abstand */
+.stars-animated span:nth-child(4) { animation-delay: 2.25s; }  /* 0.15s Abstand */
+.stars-animated span:nth-child(5) { animation-delay: 2.4s; }   /* 0.15s Abstand */
+
+/* ============================================
+   2. LOGO TICKER ENHANCEMENTS
+   ============================================ */
+
+/* Opacity gradient at edges */
+.logo-ticker {
+  position: relative;
+  overflow: hidden;
+}
+
+.logo-ticker::before,
+.logo-ticker::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.logo-ticker::before {
+  left: 0;
+  background: linear-gradient(to right, 
+    var(--background) 0%, 
+    transparent 100%);
+}
+
+.logo-ticker::after {
+  right: 0;
+  background: linear-gradient(to left, 
+    var(--background) 0%, 
+    transparent 100%);
+}
+
+/* Smooth pause on hover */
+.ticker-container:hover .ticker-content {
+  animation-play-state: paused;
+}
+
+/* ============================================
+   3. REVIEW CARDS ANIMATIONS
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.review-card {
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.review-card.animate-in {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Staggered appearance */
+.review-card:nth-child(1).animate-in { animation-delay: 0.1s; }
+.review-card:nth-child(2).animate-in { animation-delay: 0.2s; }
+.review-card:nth-child(3).animate-in { animation-delay: 0.3s; }
+
+/* Hover effect */
+.review-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(160, 135, 118, 0.15);
+}
+
+/* ============================================
+   4. NAVIGATION ANIMATIONS
+   ============================================ */
+
+/* Sticky nav background blur on scroll */
+nav {
+  transition: all 0.3s ease;
+}
+
+nav.scrolled {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(160, 135, 118, 0.1);
+}
+
+/* Active section highlighting */
+.nav-links a {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-links a::before {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 80%;
+  height: 2px;
+  background: var(--primary-color);
+  transition: transform 0.3s ease;
+}
+
+.nav-links a.active::before,
+.nav-links a:hover::before {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.nav-links a.active {
+  color: var(--primary-color);
+}
+
+/* Logo bounce animation */
+@keyframes logoBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-5px) rotate(-2deg);
+  }
+  75% {
+    transform: translateY(-3px) rotate(2deg);
+  }
+}
+
+.logo-img {
+  animation: logoBounce 0.8s ease-out;
+}
+
+.logo:hover .logo-img {
+  animation: logoBounce 0.5s ease-out;
+}
+
+/* ============================================
+   5. VIDEO CONTAINER ANIMATIONS
+   ============================================ */
+
+/* Video fade-in */
+@keyframes videoFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.video-container {
+  animation: videoFadeIn 0.8s ease-out 0.5s both;
+}
+
+/* Play button pulse - Only show on hover, Wistia has its own */
+.video-container::before {
+  display: none; /* Wistia already has a play button */
+}
+
+/* Trust badges slide-in */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.trust-badges-video {
+  animation: slideInUp 0.6s ease-out 1s both;
+}
+
+.trust-badge {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.trust-badge:hover {
+  transform: scale(1.05);
+}
+
+/* ============================================
+   8. PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+/* Use GPU acceleration for smooth animations */
+.hero-content h1,
+.feature-points li,
+.cta-primary-elegant,
+.review-card,
+.logo-img,
+.video-container,
+.trust-badge {
+  will-change: transform, opacity;
+}
+
+/* After animation completes, remove will-change */
+.animate-done {
+  will-change: auto;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .ticker-content {
+    animation: none !important;
+  }
+  
+  .cta-primary-elegant {
+    animation: none !important;
+  }
+}
+/* ============================================
+   GENERAL SCROLL ANIMATIONS
+   ============================================ */
+
+/* Fade in on scroll */
+.fade-in-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+
+.fade-in-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section animations */
+section {
+  position: relative;
+}
+
+.section-animate {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease-out;
+}
+
+.section-animate.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   SMOOTH SCROLLING
+   ============================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+@keyframes shimmer {
+  0% {
+    background-position: -500px 0;
+  }
+  100% {
+    background-position: 500px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--background) 25%,
+    rgba(164, 195, 178, 0.2) 50%,
+    var(--background) 75%
+  );
+  background-size: 500px 100%;
+  animation: shimmer 1.5s infinite;
+}
