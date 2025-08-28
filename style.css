@@ -136,11 +136,11 @@ nav {
 .nav-cta .install-btn {
     background: var(--primary-color);
     color: white;
-    padding: 0.45rem 1.2rem;
+    padding: 0.55rem 1.4rem;
     border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     transition: all 0.3s;
 }
 
@@ -362,6 +362,291 @@ nav {
     overflow: hidden;
     margin-bottom: 0;
 }
+
+/* Browser Compatibility Notice */
+.browser-compatibility {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+}
+
+.compatibility-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.browser-icons-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.compatibility-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.browser-icons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+}
+
+.browser-icons img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+    opacity: 0.85;
+    cursor: pointer;
+}
+
+.browser-icons img:hover {
+    transform: scale(1.15);
+    opacity: 1;
+}
+
+/* Benefits Section */
+.benefits-section {
+    background: var(--background);
+    padding: 5rem 2rem 6rem;
+    position: relative;
+}
+
+.benefits-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.benefits-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 4rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+/* Benefits Grid - Clean 2-3 Layout */
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* First row - 2 cards centered */
+.benefits-row.top {
+    grid-column: span 6;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+/* Second row - 3 cards */
+.benefits-row.bottom {
+    grid-column: span 6;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
+.benefit-card {
+    max-width: 350px;
+    width: 100%;
+    justify-self: center;
+}
+
+.benefit-card {
+    background: white;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border-color);
+    position: relative;
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.07),
+        0 1px 3px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        #7fb693 0%, 
+        #a4c3b2 50%, 
+        #7fb693 100%);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.12),
+        0 4px 8px rgba(0, 0, 0, 0.06);
+    border-color: rgba(127, 182, 147, 0.3);
+}
+
+.benefit-card:hover::before {
+    transform: scaleX(1);
+}
+
+.benefit-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
+    border-radius: 16px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.benefit-icon svg {
+    width: 32px;
+    height: 32px;
+    color: #7fb693;
+    transition: all 0.3s ease;
+}
+
+.benefit-card:hover .benefit-icon {
+    background: linear-gradient(135deg, #7fb693 0%, #a4c3b2 100%);
+    transform: scale(1.1);
+}
+
+.benefit-card:hover .benefit-icon svg {
+    color: white;
+    transform: scale(1.05);
+}
+
+.benefit-card h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.benefit-card p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0.85;
+}
+
+/* Responsive adjustments for Benefits Section */
+@media (max-width: 1100px) {
+    .benefits-row.bottom .benefit-card {
+        flex: 1 1 280px;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 968px) {
+    .benefits-section {
+        padding: 4rem 1.5rem 5rem;
+    }
+    
+    .benefits-title {
+        font-size: 2.2rem;
+    }
+    
+    .benefits-row {
+        max-width: 500px !important;
+    }
+    
+    .benefits-row .benefit-card {
+        flex: 1 1 100%;
+        max-width: 450px !important;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .benefits-section {
+        padding: 3rem 1rem 4rem;
+    }
+    
+    .benefits-title {
+        font-size: 1.9rem;
+        line-height: 1.3;
+        padding: 0 0.5rem;
+    }
+    
+    .benefits-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 3rem;
+        padding: 0 0.5rem;
+    }
+    
+    .benefits-row {
+        gap: 1.5rem;
+    }
+    
+    .benefit-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .benefit-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .benefit-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .benefit-card h3 {
+        font-size: 1.25rem;
+    }
+    
+    .benefit-card p {
+        font-size: 0.95rem;
+    }
+}
+    }
+    
+    .benefit-card {
+        padding: 2rem 1.5rem;
+        min-width: auto;
+    }
+    
+    .benefit-icon {
+        font-size: 3rem;
+        margin-bottom: 1.25rem;
+    }
+}
+
 .ticker-container {
     position: relative;
     width: 100%;
@@ -1165,34 +1450,25 @@ footer {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px 8px 45px;  /* Mehr Platz links für Icon-Kreis */
+    padding: 10px 20px 10px 16px;
     background: linear-gradient(135deg, #6ca580 0%, #9fc5a8 50%, #b8d4b0 100%);
     color: white;
     border-radius: 25px;
-    font-size: 0.8rem;
-    font-weight: 700;
+    font-size: 0.85rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     box-shadow: 0 3px 12px rgba(108, 165, 128, 0.25);
     margin-bottom: 1.5rem;
     transition: all 0.3s ease;
     animation: badgeSlideIn 0.6s ease-out 0.3s both;
 }
 
-/* Icon background circle - größer und besser positioniert */
-.feature-badge::before {
-    content: attr(data-icon);
-    position: absolute;
-    left: 10px;
-    width: 26px;
-    height: 26px;
-    background: rgba(255, 255, 255, 0.25);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    line-height: 1;
+.feature-badge svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    stroke-width: 2.5;
 }
 
 /* Hover effect */
@@ -1459,11 +1735,44 @@ footer {
     .feature-mini-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    /* Browser Compatibility responsive */
+    .browser-icons-container {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .browser-icons {
+        padding: 0;
+    }
+    
+    .browser-icons img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .compatibility-label {
+        font-size: 0.85rem;
+    }
 }
 
 @media (max-width: 480px) {
     .feature-mini-grid {
         grid-template-columns: 1fr;
+    }
+    
+    /* Browser Compatibility small screens */
+    .browser-icons img {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .browser-icons {
+        gap: 0.4rem;
+    }
+    
+    .compatibility-label {
+        font-size: 0.8rem;
     }
 }
 /* Update showcase image for real screenshots */
@@ -1526,10 +1835,34 @@ footer {
     border-color: rgba(127, 182, 147, 0.3);
 }
 
+.summary-card:hover .summary-icon {
+    background: linear-gradient(135deg, #7fb693 0%, #a4c3b2 100%);
+    transform: scale(1.05);
+}
+
+.summary-card:hover .summary-icon svg {
+    color: white;
+}
+
 .summary-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    display: inline-block;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
+    border-radius: 12px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.summary-icon svg {
+    width: 28px;
+    height: 28px;
+    color: #7fb693;
+    stroke-width: 2;
+    transition: color 0.3s ease;
 }
 
 .summary-card h4 {
@@ -1599,28 +1932,43 @@ footer {
     row-gap: 4rem;
 }
 
+/* Feature Item with new effects */
 .feature-item {
     position: relative;
     background: white;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.07),
+        0 1px 3px rgba(0, 0, 0, 0.06);
     border: 1px solid var(--border-color);
-    /* Start visible - Animation nur wenn .visible Klasse hinzugefügt wird */
-    opacity: 1;
-    transform: translateY(0);
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Animation nur wenn Script die .animate Klasse hinzufügt */
-.feature-item.animate:not(.visible) {
     opacity: 0;
-    transform: translateY(30px);
+    transform: scale(0.95);
+    transition: 
+        transform 0.3s ease,
+        opacity 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
+/* Remove old animation class - not needed anymore */
+
+/* Scale Fade entrance animation */
+@keyframes scaleFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Animation when visible */
 .feature-item.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
+    animation: scaleFadeIn 0.5s ease-out forwards;
 }
 
 .feature-item:nth-child(odd).visible {
@@ -1631,30 +1979,48 @@ footer {
     transition-delay: 0.2s;
 }
 
+/* Gentle Scale + Shadow Morph hover effect */
 .feature-item:hover {
-    transform: translateY(-3px);  /* Nur leicht nach oben */
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);  /* Sanfterer Schatten */
+    transform: scale(1.02);
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-/* Feature Badge inside item - positioned next to headline */
+/* Feature Badge inside item - positioned in top right corner */
 .feature-item .feature-badge {
-    position: static;  /* Normale Position im Flow */
-    display: inline-block;
-    margin-left: 1.5rem;
-    margin-right: 1.5rem;
-    margin-top: 1.5rem;
-    margin-bottom: -2.5rem;  /* Negative margin um neben h3 zu erscheinen */
-    float: right;  /* Nach rechts floaten */
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 0;
     z-index: 10;
-    font-size: 0.7rem;
-    padding: 6px 12px 6px 35px;
+    font-size: 0.75rem;
+    padding: 8px 14px 8px 32px;  /* Adjusted left padding for icon */
+    background: linear-gradient(135deg, #6ca580 0%, #9fc5a8 50%, #b8d4b0 100%);
+    color: white;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    box-shadow: 0 2px 8px rgba(108, 165, 128, 0.25);
+    line-height: 1;
+    min-height: 32px;
 }
 
-.feature-item .feature-badge::before {
+.feature-item .feature-badge svg {
+    position: absolute;
     left: 8px;
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    stroke-width: 2;
+    margin-right: 0;
 }
 
 .feature-screenshot {
@@ -1674,11 +2040,11 @@ footer {
     height: 100%;
     object-fit: contain;  /* contain statt cover - zeigt das ganze Bild */
     object-position: center center;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Keine Transition für Bilder */
 }
 
 .feature-item:hover .feature-screenshot img {
-    transform: scale(1.01);  /* Nur minimaler Zoom */
+    /* Kein Zoom-Effekt mehr */
 }
 
 .feature-item h3 {
@@ -1934,25 +2300,7 @@ html {
     overflow: hidden;
 }
 
-.feature-screenshot::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.3),
-        transparent
-    );
-    transition: left 0.8s;
-}
-
-.feature-item:hover .feature-screenshot::after {
-    left: 100%;
-}
+/* Shine effect removed for cleaner look */
 /* Premium micro-interactions */
 
 /* Logo ticker enhanced */
@@ -2044,11 +2392,15 @@ nav a:hover::after {
 }
 
 /* Performance optimizations */
-.feature-item,
 .summary-card,
 .review-card {
     will-change: transform, opacity;
     backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Feature items ohne 3D-Optimierungen für sauberen Look */
+.feature-item {
     -webkit-font-smoothing: antialiased;
 }
 
