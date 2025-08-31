@@ -354,11 +354,8 @@ class WelcomePage {
       if (typeof rdt !== 'undefined') {
         try {
           // Track as Lead event (supported conversion type)
-          rdt('track', 'Lead', {
-            value: 1,
-            currency: 'USD',
-            transactionId: params.get('fp') || Date.now().toString()
-          });
+          // KEIN value oder currency - nur der Event selbst
+          rdt('track', 'Lead');
           console.log('[Reddit Pixel] Lead event tracked for extension installation');
         } catch (error) {
           console.error('[Reddit Pixel] Error tracking Lead event:', error);
