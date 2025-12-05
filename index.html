@@ -24,17 +24,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animations.css">
     
-    <!-- Analytics Tracking Codes -->
-    <!-- Umami Analytics -->
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="56139d25-cea4-4752-a825-aa3f2292ca15"></script>
-    
-    <!-- Clicky Analytics -->
-    <script async data-id="101490099" src="//static.getclicky.com/js"></script>
-    
-    <!-- Plausible Analytics -->
-    <script defer data-domain="monkey-block.com" src="https://plausible.io/js/script.outbound-links.pageview-props.tagged-events.js"></script>
-    
-    <!-- Hotjar Tracking Code for MonkeyBlock -->
+    <!-- Hotjar -->
     <script>
         (function(h,o,t,j,a,r){
             h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
@@ -46,32 +36,10 @@
         })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
     </script>
     
-    <!-- Reddit Pixel -->
-    <script>
-        !function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);
-        rdt('init','a2_hgd05h3o4oza', {"optOut":false,"useDecimalCurrencyValues":true});
-        
-        // Fire events when page loads
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                // Only track Landing Page View event (no redundant PageVisit)
-                rdt('track', 'Custom', {
-                    customEventName: 'Landing_Page_View',
-                    value: 1,
-                    currency: 'USD'
-                });
-            }, 100);
-        });
-    </script>
-
-<!-- Referral Code Capture (must be early to capture ?ref= parameter) -->
     <script src="/js/referral-capture.js"></script>
-    
     <script src="/js/debug-attribution.js"></script>
 
-
-    
-    <!-- Amplitude Browser SDK v2 -->
+    <!-- Amplitude -->
     <script type="text/javascript">
     !function(){"use strict";!function(e,t){var n=e.amplitude||{_q:[],_iq:{}};if(n.invoked)e.console&&console.error&&console.error("Amplitude snippet has been loaded.");else{n.invoked=!0;var r=function(e,t){e.prototype[t]=function(){return this._q.push([t].concat(Array.prototype.slice.call(arguments,0))),this}},s=function(e,t,n){return function(r){e._q.push({name:t,args:Array.prototype.slice.call(n,0),resolve:r})}},o=function(e,t,n){e[t]=function(){if(n)return{promise:new Promise(s(e,t,Array.prototype.slice.call(arguments)))}}},a=function(e){for(var t=0;t<v.length;t++)o(e,v[t],!1);for(var n=0;n<y.length;n++)o(e,y[n],!0)};n.getInstance=function(e){return e=(e&&0!==e.length?e:"$default_instance").toLowerCase(),Object.prototype.hasOwnProperty.call(n._iq,e)||(n._iq[e]={_q:[]},a(n._iq[e])),n._iq[e]},e.amplitude=n;for(var i=function(e){var t=n[e];return function(){return t.apply(n,arguments)}},c=["init","setOptOut","setDeviceId","setUserId","setSessionId","setUserProperties","clearUserProperties","setGroup","setRevenueProperties","logRevenueV2","revenue","setAmplitudeId","regenerateDeviceId","groupIdentify","onInit","onNewSessionStart","logEventWithTimestamp","logEventWithGroups","setSessionId","resetSessionId","getDeviceId","getUserId","setMinTimeBetweenSessionsMillis","setEventUploadThreshold","setUseDynamicConfig","setServerZone","setServerUrl","sendEvents","setLibrary","setTransport"],l=0;l<c.length;l++)r(n,c[l]);n.Identify=t.Identify,n.Revenue=t.Revenue;var u=["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","getUserProperties"],d=0;d<u.length;d++)r(n.Identify.prototype,u[d]);var p=["setProductId","setQuantity","setPrice","setRevenueType","setEventProperties"],f=0;f<p.length;f++)r(n.Revenue.prototype,p[f]);var v=["getDeviceId","setDeviceId","getSessionId","setSessionId","getUserId","setUserId","setOptOut","setTransport","reset","extendSession"],y=["init","add","remove","track","logEvent","identify","groupIdentify","setGroup","revenue","flush"];a(n),n.createInstance=function(e){return n._iq[e]={_q:[]},a(n._iq[e]),n._iq[e]},n.createInstance("default");var g="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};g.amplitude=n}}(window,document)}();
     </script>
@@ -93,15 +61,9 @@
       })(window,document);
     </script>
     
-    <!-- Shared Fingerprint Generator -->
     <script src="/js/shared-fingerprint.js"></script>
-    
-    <!-- User ID Generator (Phase 3) -->
     <script src="/js/user-id-generator.js"></script>
-    
-    <!-- MonkeyBlock Analytics Tracker -->
     <script src="/js/amplitude-web.js" defer></script>
-    <script src="/js/reddit-tracking-simple.js" defer></script>
 </head>
 <body>
     <!-- Navigation -->
