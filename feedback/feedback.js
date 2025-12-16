@@ -425,12 +425,75 @@ async function sendFullFeedback() {
     const missingFeature = document.getElementById('quickFeature')?.value || feedbackData.missingFeature;
     const otherReason = document.getElementById('quickOther')?.value || feedbackData.otherReason;
     const technicalIssue = document.getElementById('quickIssue')?.value || feedbackData.technicalIssue;
-    
+
+    // Get system information
+    const platform = navigator.platform || 'Unknown';
+    const language = navigator.language || 'Unknown';
+    const screenResolution = `${screen.width}x${screen.height}`;
+
+    // Parse user agent for better readability
+    const ua = navigator.userAgent;
+    let browserInfo = 'Unknown Browser';
+    let osInfo = 'Unknown OS';
+
+    // Detect browser
+    if (ua.includes('Chrome') && !ua.includes('Edg')) {
+        const chromeVersion = ua.match(/Chrome\/([\d.]+)/)?.[1] || '';
+        browserInfo = `Chrome ${chromeVersion}`;
+    } else if (ua.includes('Edg')) {
+        const edgeVersion = ua.match(/Edg\/([\d.]+)/)?.[1] || '';
+        browserInfo = `Edge ${edgeVersion}`;
+    } else if (ua.includes('Firefox')) {
+        const firefoxVersion = ua.match(/Firefox\/([\d.]+)/)?.[1] || '';
+        browserInfo = `Firefox ${firefoxVersion}`;
+    } else if (ua.includes('Safari') && !ua.includes('Chrome')) {
+        const safariVersion = ua.match(/Version\/([\d.]+)/)?.[1] || '';
+        browserInfo = `Safari ${safariVersion}`;
+    }
+
+    // Detect OS
+    if (ua.includes('Windows')) {
+        osInfo = 'Windows';
+        if (ua.includes('Windows NT 10.0')) osInfo = 'Windows 10/11';
+    } else if (ua.includes('Mac')) {
+        osInfo = 'macOS';
+    } else if (ua.includes('Linux')) {
+        osInfo = 'Linux';
+    } else if (ua.includes('Android')) {
+        osInfo = 'Android';
+    } else if (ua.includes('iOS')) {
+        osInfo = 'iOS';
+    }
+
+    // Try to get location data (non-blocking)
+    let locationData = { country: 'Unknown', city: 'Unknown', region: '' };
+    try {
+        const geoResponse = await fetch('https://ipapi.co/json/');
+        if (geoResponse.ok) {
+            const geoData = await geoResponse.json();
+            locationData = {
+                country: geoData.country_name || 'Unknown',
+                city: geoData.city || 'Unknown',
+                region: geoData.region || ''
+            };
+        }
+    } catch (geoError) {
+        console.log('Could not fetch location data');
+    }
+
+    // Get days used from Amplitude tracker if available
+    let daysUsed = 'Unknown';
+    let timeSinceInstallFormatted = 'Unknown';
+    if (amplitudeTracker) {
+        daysUsed = amplitudeTracker.daysUsed || 'Unknown';
+        timeSinceInstallFormatted = amplitudeTracker.timeSinceInstallFormatted || 'Unknown';
+    }
+
     const data = {
         access_key: WEB3FORMS_ACCESS_KEY,
         subject: 'Monkey Block - Complete Uninstall Feedback',
         from_name: 'Monkey Block User',
-        
+
         // Main data
         reason: selectedReason,
         missing_feature: missingFeature || '',
@@ -438,11 +501,24 @@ async function sendFullFeedback() {
         technical_issue: technicalIssue || '',
         detailed_feedback: feedbackData.feedback || 'No details provided',
         user_email: feedbackData.email || 'Not provided',
-        
+
         // Metadata
         version: feedbackData.version,
         timestamp: new Date().toISOString(),
-        
+
+        // System information
+        browser: browserInfo,
+        os: osInfo,
+        platform: platform,
+        language: language,
+        screen_resolution: screenResolution,
+        location: `${locationData.city}, ${locationData.country}`,
+        full_user_agent: ua,
+
+        // Usage metrics
+        days_used: daysUsed,
+        time_since_install: timeSinceInstallFormatted,
+
         // Formatted message
         message: `
 COMPLETE UNINSTALL FEEDBACK:
@@ -461,19 +537,34 @@ METADATA:
 - Extension Version: ${feedbackData.version}
 - Submitted: ${new Date().toLocaleString()}
 - Form Type: Two-Step Process (Simplified)
+
+SYSTEM INFORMATION:
+- Browser: ${browserInfo}
+- OS: ${osInfo}
+- Platform: ${platform}
+- Language: ${language}
+- Screen Resolution: ${screenResolution}
+- Location: ${locationData.city}, ${locationData.country}
+
+USAGE METRICS:
+- Days Used: ${daysUsed}
+- Time Since Install: ${timeSinceInstallFormatted}
+
+TECHNICAL DETAILS:
+- User Agent: ${ua}
         `.trim()
     };
-    
+
     const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     });
-    
+
     if (!response.ok) {
         throw new Error('Failed to send feedback');
     }
-    
+
     // Mark as sent and clear draft
     feedbackData.sent = true;
     localStorage.removeItem('feedback-draft');
@@ -552,21 +643,97 @@ function restoreDraft() {
 
 // Send abandoned draft
 async function sendAbandonedDraft(draftData) {
+    // Get system information
+    const platform = navigator.platform || 'Unknown';
+    const language = navigator.language || 'Unknown';
+    const screenResolution = `${screen.width}x${screen.height}`;
+
+    // Parse user agent for better readability
+    const ua = navigator.userAgent;
+    let browserInfo = 'Unknown Browser';
+    let osInfo = 'Unknown OS';
+
+    // Detect browser
+    if (ua.includes('Chrome') && !ua.includes('Edg')) {
+        const chromeVersion = ua.match(/Chrome\/([\d.]+)/)?.[1] || '';
+        browserInfo = `Chrome ${chromeVersion}`;
+    } else if (ua.includes('Edg')) {
+        const edgeVersion = ua.match(/Edg\/([\d.]+)/)?.[1] || '';
+        browserInfo = `Edge ${edgeVersion}`;
+    } else if (ua.includes('Firefox')) {
+        const firefoxVersion = ua.match(/Firefox\/([\d.]+)/)?.[1] || '';
+        browserInfo = `Firefox ${firefoxVersion}`;
+    } else if (ua.includes('Safari') && !ua.includes('Chrome')) {
+        const safariVersion = ua.match(/Version\/([\d.]+)/)?.[1] || '';
+        browserInfo = `Safari ${safariVersion}`;
+    }
+
+    // Detect OS
+    if (ua.includes('Windows')) {
+        osInfo = 'Windows';
+        if (ua.includes('Windows NT 10.0')) osInfo = 'Windows 10/11';
+    } else if (ua.includes('Mac')) {
+        osInfo = 'macOS';
+    } else if (ua.includes('Linux')) {
+        osInfo = 'Linux';
+    } else if (ua.includes('Android')) {
+        osInfo = 'Android';
+    } else if (ua.includes('iOS')) {
+        osInfo = 'iOS';
+    }
+
+    // Try to get location data (non-blocking)
+    let locationData = { country: 'Unknown', city: 'Unknown', region: '' };
+    try {
+        const geoResponse = await fetch('https://ipapi.co/json/');
+        if (geoResponse.ok) {
+            const geoData = await geoResponse.json();
+            locationData = {
+                country: geoData.country_name || 'Unknown',
+                city: geoData.city || 'Unknown',
+                region: geoData.region || ''
+            };
+        }
+    } catch (geoError) {
+        console.log('Could not fetch location data for abandoned draft');
+    }
+
+    // Get days used from Amplitude tracker if available
+    let daysUsed = 'Unknown';
+    let timeSinceInstallFormatted = 'Unknown';
+    if (amplitudeTracker) {
+        daysUsed = amplitudeTracker.daysUsed || 'Unknown';
+        timeSinceInstallFormatted = amplitudeTracker.timeSinceInstallFormatted || 'Unknown';
+    }
+
     const payload = {
         access_key: WEB3FORMS_ACCESS_KEY,
         subject: 'Monkey Block - Abandoned Feedback Draft',
         from_name: 'Monkey Block User',
-        
+
         // Draft data
         reason: draftData.reason || 'not selected',
         missing_feature: draftData.missingFeature || '',
         partial_feedback: draftData.feedback || '',
         email: draftData.email || 'not provided',
-        
+
         // Metadata
         draft_age_minutes: Math.floor((Date.now() - draftData.timestamp) / 60000),
         version: draftData.version,
-        
+
+        // System information
+        browser: browserInfo,
+        os: osInfo,
+        platform: platform,
+        language: language,
+        screen_resolution: screenResolution,
+        location: `${locationData.city}, ${locationData.country}`,
+        full_user_agent: ua,
+
+        // Usage metrics
+        days_used: daysUsed,
+        time_since_install: timeSinceInstallFormatted,
+
         message: `
 ABANDONED FEEDBACK DRAFT:
 
@@ -578,9 +745,24 @@ EMAIL: ${draftData.email || 'Not provided'}
 
 This draft was abandoned after ${Math.floor((Date.now() - draftData.timestamp) / 60000)} minutes.
 Version: ${draftData.version}
+
+SYSTEM INFORMATION:
+- Browser: ${browserInfo}
+- OS: ${osInfo}
+- Platform: ${platform}
+- Language: ${language}
+- Screen Resolution: ${screenResolution}
+- Location: ${locationData.city}, ${locationData.country}
+
+USAGE METRICS:
+- Days Used: ${daysUsed}
+- Time Since Install: ${timeSinceInstallFormatted}
+
+TECHNICAL DETAILS:
+- User Agent: ${ua}
         `.trim()
     };
-    
+
     // Fire and forget
     fetch('https://api.web3forms.com/submit', {
         method: 'POST',

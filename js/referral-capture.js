@@ -33,7 +33,7 @@
       `;
       
       banner.innerHTML = `
-        <span>🎁 You were invited by a friend! Install Monkey Block and you both get <strong>free Pro time</strong>.</span>
+        <span>🎁 You were invited by a friend! Sign up now and get <strong>7 days Pro free</strong>!</span>
         <button id="mb-referral-dismiss" style="
           background: rgba(255,255,255,0.2); border: none; color: white;
           padding: 6px 14px; border-radius: 6px; cursor: pointer;
