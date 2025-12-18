@@ -4,7 +4,7 @@
   const urlParams = new URLSearchParams(window.location.search);
   const refCode = urlParams.get('ref');
   
-  if (refCode && /^[A-Za-z0-9]{4,20}$/.test(refCode)) {
+  if (refCode && /^[A-Z0-9]{6,12}$/i.test(refCode)) {
     const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString();
     document.cookie = `mb_referral=${refCode}; expires=${expires}; path=/; SameSite=Lax`;
     localStorage.setItem('mb_referral', refCode);
