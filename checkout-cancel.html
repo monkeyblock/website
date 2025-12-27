@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout Cancelled - Monkey Block</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Amplitude Analytics -->
+  <script src="/shared/monkey-block-analytics.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #7a9b8e;
+      --secondary-color: #6b8a7a;
+      --warning-color: #f0b98c;
+      --background: #f9f5f0;
+      --card-bg: #ffffff;
+      --text-primary: #6b4e3d;
+      --text-secondary: #8b6f5d;
+      --text-muted: #a08776;
+      --border-color: rgba(160, 135, 118, 0.12);
+      --shadow-light: rgba(107, 78, 61, 0.06);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .monkey-icon {
+      font-size: 80px;
+      margin-bottom: 32px;
+      animation: gentle-sway 2s ease-in-out infinite;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+    }
+
+    @keyframes gentle-sway {
+      0%, 100% {
+        transform: rotate(-3deg);
+      }
+      50% {
+        transform: rotate(3deg);
+      }
+    }
+
+    .container {
+      background: var(--card-bg);
+      border-radius: 28px;
+      box-shadow: 0 26px 48px var(--shadow-light);
+      padding: 48px;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      animation: slideUp 0.5s ease-out;
+      border: 1px solid var(--border-color);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .reasons-box {
+      background: rgba(122, 155, 142, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    .reasons-box h3 {
+      font-size: 15px;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .reasons-box ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .reasons-box li {
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .intro-text {
+      font-size: 17px;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 16px 36px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      margin: 8px;
+      box-shadow: 0 8px 30px rgba(122, 155, 142, 0.25);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(122, 155, 142, 0.35);
+      background: linear-gradient(135deg, var(--secondary-color) 0%, #5a7969 100%);
+    }
+
+    .btn-secondary {
+      background: rgba(122, 155, 142, 0.1);
+      color: var(--primary-color);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(122, 155, 142, 0.15);
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 32px 24px;
+      }
+
+      .btn {
+        width: 100%;
+        display: block;
+        margin: 8px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="monkey-icon">🙈</div>
+
+  <div class="container">
+    <h1>Checkout Cancelled</h1>
+    <p class="intro-text">No problem at all! You can upgrade to Pro whenever you're ready.</p>
+
+    <div class="reasons-box">
+      <h3>Common reasons for cancellation:</h3>
+      <ul>
+        <li><strong>Just browsing?</strong> Take your time exploring the features</li>
+        <li><strong>Wrong plan?</strong> We offer Monthly, Annual, and Lifetime options</li>
+        <li><strong>Payment issues?</strong> Try a different payment method</li>
+        <li><strong>Have questions?</strong> Our support team is here to help</li>
+      </ul>
+    </div>
+
+    <p>Your free account remains active with all basic features. You can upgrade anytime from the extension dashboard.</p>
+
+    <div>
+      <a href="#" id="tryAgainBtn" class="btn">Try Again</a>
+      <a href="https://monkey-block.com" class="btn btn-secondary">Back to Home</a>
+      <a href="https://monkey-block.com/contact.html" target="_blank" class="btn btn-secondary">Contact Support</a>
+    </div>
+  </div>
+
+  <script>
+    const EXTENSION_ID = 'ggccjkdgmlclpigflghjjkgeblgdgffe';
+
+    // Initialize analytics
+    let analytics = null;
+    if (window.MonkeyBlockAnalytics) {
+      analytics = new MonkeyBlockAnalytics({ platform: 'website' });
+      analytics.initialize().then(() => {
+        // Track checkout cancellation
+        analytics.track('Checkout Cancelled', {
+          page: 'checkout_cancel_website',
+          timestamp: new Date().toISOString(),
+          referrer: document.referrer
+        });
+      });
+    }
+
+    // Handle "Try Again" button
+    document.getElementById('tryAgainBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+
+      // Track retry attempt
+      if (analytics) {
+        analytics.track('Checkout Retry Clicked', {
+          page: 'checkout_cancel_website',
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // Try to open extension's Pro upgrade tab
+      try {
+        chrome.runtime.sendMessage(
+          EXTENSION_ID,
+          {
+            type: 'OPEN_PRO_TAB',
+            source: 'checkout_cancel_retry'
+          },
+          (response) => {
+            if (chrome.runtime.lastError || !response || !response.success) {
+              // If extension not available, redirect to website pricing
+              window.location.href = 'https://monkey-block.com/#pricing';
+            }
+          }
+        );
+      } catch (error) {
+        // If extension not available, redirect to website pricing
+        window.location.href = 'https://monkey-block.com/#pricing';
+      }
+    });
+  </script>
+</body>
+</html>

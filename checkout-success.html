@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - Monkey Block Pro</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Amplitude Analytics -->
+  <script src="/shared/monkey-block-analytics.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #7a9b8e;
+      --secondary-color: #6b8a7a;
+      --accent-color: #e5c9a6;
+      --warning-color: #f0b98c;
+      --danger-color: #d9a19a;
+      --success-color: #a4c3b2;
+      --background: #f9f5f0;
+      --card-bg: #ffffff;
+      --text-primary: #6b4e3d;
+      --text-secondary: #8b6f5d;
+      --text-muted: #a08776;
+      --border-color: rgba(160, 135, 118, 0.12);
+      --border-hover: rgba(160, 135, 118, 0.2);
+      --shadow-light: rgba(107, 78, 61, 0.06);
+      --shadow-medium: rgba(107, 78, 61, 0.12);
+      --shadow-strong: rgba(107, 78, 61, 0.18);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .floating-logo {
+      width: 100px;
+      height: 100px;
+      margin-bottom: -50px;
+      position: relative;
+      z-index: 2;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(122, 155, 142, 0.3);
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      background: var(--card-bg);
+      border-radius: 28px;
+      box-shadow: 0 26px 48px var(--shadow-light);
+      padding: 48px;
+      padding-top: 80px;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      animation: slideUp 0.5s ease-out;
+      border: 1px solid var(--border-color);
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      position: relative;
+      animation: slideInScale 0.6s ease-out 0.2s both;
+    }
+
+    @keyframes slideInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .checkmark {
+      width: 56px;
+      height: 56px;
+      margin-left: 12px;
+      background: linear-gradient(135deg, var(--success-color) 0%, var(--primary-color) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.5s ease-out 0.3s both;
+      box-shadow: 0 8px 24px rgba(122, 155, 142, 0.35);
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0) rotate(-180deg);
+      }
+      to {
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    .checkmark svg {
+      width: 32px;
+      height: 32px;
+      stroke: white;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: drawCheck 0.5s ease-out 0.6s forwards;
+    }
+
+    @keyframes drawCheck {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    /* Confetti Animation */
+    @keyframes confettiFall {
+      0% {
+        top: -20px;
+        opacity: 1;
+      }
+      100% {
+        top: 100vh;
+        opacity: 0;
+        transform: translateX(calc(var(--drift) * 100px)) rotate(calc(var(--rotation) * 360deg));
+      }
+    }
+
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      z-index: 10000;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 20px;
+      color: var(--primary-color);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .intro-text {
+      font-size: 17px;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+
+    .info-box {
+      background: rgba(122, 155, 142, 0.08);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    .info-box h3 {
+      font-size: 13px;
+      color: var(--primary-color);
+      margin-bottom: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .info-value {
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .status-active {
+      color: var(--success-color) !important;
+    }
+
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 16px 36px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      margin-top: 12px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(122, 155, 142, 0.25);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(122, 155, 142, 0.35);
+      background: linear-gradient(135deg, var(--secondary-color) 0%, #5a7969 100%);
+    }
+
+    .btn-secondary {
+      background: rgba(122, 155, 142, 0.1);
+      color: var(--primary-color);
+      box-shadow: none;
+      margin-left: 12px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(122, 155, 142, 0.15);
+      box-shadow: none;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(122, 155, 142, 0.2);
+      border-top-color: var(--primary-color);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .status-message {
+      background: rgba(122, 155, 142, 0.1);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      border: 1px solid var(--border-color);
+    }
+
+    .status-message p {
+      margin: 0;
+      color: var(--primary-color);
+    }
+
+    .status-message.success {
+      background: rgba(164, 195, 178, 0.15);
+      border-color: rgba(164, 195, 178, 0.3);
+    }
+
+    .status-message.success p {
+      color: var(--secondary-color);
+    }
+
+    .status-message.warning {
+      background: rgba(240, 185, 140, 0.15);
+      border-color: rgba(240, 185, 140, 0.3);
+    }
+
+    .status-message.warning p {
+      color: #d9895a;
+    }
+
+    .next-steps {
+      background: rgba(122, 155, 142, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    .next-steps h3 {
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .step:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-number {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .extension-notice {
+      background: rgba(122, 155, 142, 0.1);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+      text-align: left;
+    }
+
+    .extension-notice h3 {
+      color: var(--primary-color);
+      font-size: 15px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .extension-notice p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+
+    .note {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .note a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .note a:hover {
+      text-decoration: underline;
+      color: var(--secondary-color);
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 32px 24px;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        margin: 6px 0;
+      }
+
+      .btn-secondary {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <img src="/icons/icon128.png" alt="Monkey Block Logo" class="floating-logo">
+
+  <div class="container">
+    <div class="logo-container">
+      <div class="checkmark">
+        <svg viewBox="0 0 52 52">
+          <path d="M14 27l10 10 20-20" />
+        </svg>
+      </div>
+    </div>
+
+    <h1>Payment Successful!</h1>
+    <p class="subtitle">Welcome to Monkey Block Pro 🎉</p>
+    <p class="intro-text">Thank you for upgrading! Your Pro subscription is being activated right now.</p>
+
+    <div class="info-box" id="checkout-info" style="display: none;">
+      <h3>Order Details</h3>
+      <div class="info-item">
+        <span class="info-label">Order ID</span>
+        <span class="info-value" id="checkout-id">-</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Status</span>
+        <span class="info-value status-active">✓ Payment Received</span>
+      </div>
+    </div>
+
+    <div class="status-message" id="status-message">
+      <p>
+        <span class="loading"></span>
+        Connecting to extension...
+      </p>
+    </div>
+
+    <!-- Extension communication notice -->
+    <div class="extension-notice" id="extension-notice" style="display: none;">
+      <h3>🔌 Extension Not Detected</h3>
+      <p>Make sure the Monkey Block extension is installed and enabled in your browser. Your Pro subscription will activate automatically when you open the extension.</p>
+    </div>
+
+    <!-- Next steps -->
+    <div class="next-steps" id="next-steps" style="display: none;">
+      <h3>🎉 What's Next?</h3>
+      <div class="step">
+        <span class="step-number">1</span>
+        <span>Click "Open Extension" below to access your Pro dashboard</span>
+      </div>
+      <div class="step">
+        <span class="step-number">2</span>
+        <span>Explore all Pro features including Smart Guard</span>
+      </div>
+      <div class="step">
+        <span class="step-number">3</span>
+        <span>Set up advanced blocking rules and time limits</span>
+      </div>
+    </div>
+
+    <div class="buttons" id="buttons">
+      <a href="#" id="open-extension" class="btn" style="display: none;">Open Extension</a>
+      <a href="https://monkey-block.com" class="btn btn-secondary">Back to Home</a>
+    </div>
+
+    <p class="note">
+      📧 A confirmation email has been sent to your address.<br>
+      Pro activation is usually instant. If you need help,<br>
+      <a href="https://monkey-block.com/contact.html" target="_blank">contact our support team</a>.
+    </p>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const EXTENSION_ID = 'ggccjkdgmlclpigflghjjkgeblgdgffe'; // Your extension ID
+
+      // DOM Elements
+      const statusMessage = document.getElementById('status-message');
+      const extensionNotice = document.getElementById('extension-notice');
+      const nextSteps = document.getElementById('next-steps');
+      const openExtensionBtn = document.getElementById('open-extension');
+      const checkoutInfo = document.getElementById('checkout-info');
+      const checkoutIdEl = document.getElementById('checkout-id');
+
+      // Parse URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const checkoutId = urlParams.get('checkout_id');
+      const customerEmail = urlParams.get('customer_email');
+
+      // Display checkout ID if available
+      if (checkoutId) {
+        checkoutIdEl.textContent = checkoutId.substring(0, 8) + '...';
+        checkoutInfo.style.display = 'block';
+
+        // Track checkout completed
+        trackEvent('Checkout Completed', {
+          checkout_id: checkoutId,
+          source: 'polar',
+          page: 'checkout_success_website',
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      /**
+       * Create confetti celebration effect
+       */
+      function createConfetti() {
+        const colors = ['#7a9b8e', '#e5c9a6', '#a4c3b2', '#f0b98c', '#4CAF50'];
+        const confettiCount = 60;
+
+        for (let i = 0; i < confettiCount; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+
+          const size = Math.random() * 8 + 8;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          const left = Math.random() * 100;
+          const delay = Math.random() * 0.5;
+          const duration = Math.random() * 2 + 2;
+          const drift = (Math.random() - 0.5) * 2;
+          const rotation = (Math.random() - 0.5) * 4;
+
+          confetti.style.cssText = `
+            width: ${size}px;
+            height: ${size}px;
+            background: ${color};
+            left: ${left}%;
+            top: -20px;
+            opacity: ${Math.random() * 0.8 + 0.2};
+            border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+            --drift: ${drift};
+            --rotation: ${rotation};
+            animation: confettiFall ${duration}s ease-out ${delay}s forwards;
+          `;
+
+          document.body.appendChild(confetti);
+
+          // Remove confetti after animation
+          setTimeout(() => {
+            confetti.remove();
+          }, (duration + delay) * 1000 + 100);
+        }
+      }
+
+      /**
+       * Track event to Amplitude
+       */
+      function trackEvent(eventName, eventProperties = {}) {
+        try {
+          if (window.mbAnalytics) {
+            window.mbAnalytics.track(eventName, eventProperties);
+          }
+        } catch (error) {
+          console.warn('[Checkout Success] Error tracking event:', error);
+        }
+      }
+
+      /**
+       * Update status message
+       */
+      function setStatus(type, message) {
+        statusMessage.className = 'status-message ' + type;
+        statusMessage.innerHTML = `<p>${message}</p>`;
+      }
+
+      /**
+       * Try to communicate with extension
+       */
+      async function connectToExtension() {
+        try {
+          // Try to send message to extension
+          chrome.runtime.sendMessage(
+            EXTENSION_ID,
+            {
+              type: 'CHECKOUT_SUCCESS',
+              checkout_id: checkoutId,
+              customer_email: customerEmail,
+              timestamp: new Date().toISOString()
+            },
+            (response) => {
+              if (chrome.runtime.lastError) {
+                // Extension not installed or disabled
+                console.log('Extension not available:', chrome.runtime.lastError.message);
+                showExtensionNotInstalled();
+              } else if (response && response.success) {
+                // Extension received the message
+                showSuccess();
+              } else {
+                showExtensionNotInstalled();
+              }
+            }
+          );
+        } catch (error) {
+          console.error('Error connecting to extension:', error);
+          showExtensionNotInstalled();
+        }
+      }
+
+      /**
+       * Show success state
+       */
+      function showSuccess() {
+        setStatus('success', '✓ Pro features activated! Opening extension...');
+        nextSteps.style.display = 'block';
+        extensionNotice.style.display = 'none';
+        openExtensionBtn.style.display = 'inline-block';
+
+        // Set up extension link
+        openExtensionBtn.href = `chrome-extension://${EXTENSION_ID}/dashboard.html`;
+
+        trackEvent('Checkout Success Extension Connected', {
+          checkout_id: checkoutId,
+          page: 'checkout_success_website'
+        });
+
+        // Auto-open extension after 2 seconds
+        setTimeout(() => {
+          window.location.href = `chrome-extension://${EXTENSION_ID}/dashboard.html`;
+        }, 2000);
+      }
+
+      /**
+       * Show extension not installed state
+       */
+      function showExtensionNotInstalled() {
+        setStatus('warning', 'Please install or enable the Monkey Block extension');
+        extensionNotice.style.display = 'block';
+        nextSteps.style.display = 'block';
+        openExtensionBtn.style.display = 'inline-block';
+        openExtensionBtn.textContent = 'Install Extension';
+        openExtensionBtn.href = 'https://chrome.google.com/webstore/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe';
+
+        trackEvent('Checkout Success Extension Not Found', {
+          checkout_id: checkoutId,
+          page: 'checkout_success_website'
+        });
+      }
+
+      // Initialize Amplitude Analytics
+      if (window.MonkeyBlockAnalytics) {
+        window.mbAnalytics = new MonkeyBlockAnalytics({ platform: 'website' });
+        window.mbAnalytics.initialize();
+      }
+
+      // Show confetti celebration immediately
+      createConfetti();
+
+      // Try to connect to extension
+      setTimeout(() => {
+        connectToExtension();
+      }, 1000);
+
+    })();
+  </script>
+</body>
+</html>
