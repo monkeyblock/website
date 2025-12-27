@@ -486,7 +486,16 @@
       <p>Make sure the Monkey Block extension is installed and enabled in your browser. Your Pro subscription will activate automatically when you open the extension.</p>
     </div>
 
-    <!-- Next steps -->
+    <!-- Guest checkout notice (new user without extension) -->
+    <div class="extension-notice" id="guest-checkout-notice" style="display: none; background: rgba(164, 195, 178, 0.1);">
+      <h3>📧 Check Your Email</h3>
+      <p>We've sent you a login link to <strong id="customer-email-display">your email address</strong>. Click the link in the email to automatically log in and activate your Pro subscription.</p>
+      <p style="margin-top: 12px; font-size: 13px; color: var(--text-muted);">
+        Don't forget to install the Monkey Block extension after logging in!
+      </p>
+    </div>
+
+    <!-- Next steps (for existing users with extension) -->
     <div class="next-steps" id="next-steps" style="display: none;">
       <h3>🎉 What's Next?</h3>
       <div class="step">
@@ -500,6 +509,23 @@
       <div class="step">
         <span class="step-number">3</span>
         <span>Set up advanced blocking rules and time limits</span>
+      </div>
+    </div>
+
+    <!-- Next steps for guest checkout -->
+    <div class="next-steps" id="next-steps-guest" style="display: none;">
+      <h3>🚀 Getting Started</h3>
+      <div class="step">
+        <span class="step-number">1</span>
+        <span>Check your email inbox for the login link</span>
+      </div>
+      <div class="step">
+        <span class="step-number">2</span>
+        <span>Click "Install Extension" below to add Monkey Block to your browser</span>
+      </div>
+      <div class="step">
+        <span class="step-number">3</span>
+        <span>Open the extension and log in with the email link to activate Pro</span>
       </div>
     </div>
 
@@ -524,7 +550,10 @@
       // DOM Elements
       const statusMessage = document.getElementById('status-message');
       const extensionNotice = document.getElementById('extension-notice');
+      const guestCheckoutNotice = document.getElementById('guest-checkout-notice');
+      const customerEmailDisplay = document.getElementById('customer-email-display');
       const nextSteps = document.getElementById('next-steps');
+      const nextStepsGuest = document.getElementById('next-steps-guest');
       const openExtensionBtn = document.getElementById('open-extension');
       const checkoutInfo = document.getElementById('checkout-info');
       const checkoutIdEl = document.getElementById('checkout-id');
@@ -628,11 +657,24 @@
               if (chrome.runtime.lastError) {
                 // Extension not installed or disabled
                 console.log('Extension not available:', chrome.runtime.lastError.message);
+                // Extension not found - user needs to install it first
+                // Show magic link email notice
                 showExtensionNotInstalled();
               } else if (response && response.success) {
-                // Extension received the message
-                showSuccess();
+                // Extension responded!
+                console.log('Extension response:', response);
+
+                if (response.isGuest) {
+                  // Fall 3: Extension installed but no account yet (guest checkout)
+                  // Show that account will be created and they'll get an email
+                  showGuestWithExtension();
+                } else {
+                  // Fall 1: Extension installed + existing account
+                  // Activate Pro and open dashboard
+                  showSuccess();
+                }
               } else {
+                // Extension responded but with an error
                 showExtensionNotInstalled();
               }
             }
@@ -649,7 +691,9 @@
       function showSuccess() {
         setStatus('success', '✓ Pro features activated! Opening extension...');
         nextSteps.style.display = 'block';
+        nextStepsGuest.style.display = 'none';
         extensionNotice.style.display = 'none';
+        guestCheckoutNotice.style.display = 'none';
         openExtensionBtn.style.display = 'inline-block';
 
         // Set up extension link
@@ -667,18 +711,60 @@
       }
 
       /**
-       * Show extension not installed state
+       * Show extension not installed state (Fall 2)
+       * Extension not found - user needs to install it and will receive magic link email
        */
       function showExtensionNotInstalled() {
-        setStatus('warning', 'Please install or enable the Monkey Block extension');
-        extensionNotice.style.display = 'block';
-        nextSteps.style.display = 'block';
+        setStatus('success', '✓ Check your email for login instructions');
+        guestCheckoutNotice.style.display = 'block';
+        extensionNotice.style.display = 'none';
+
+        // Display customer email if available
+        if (customerEmail) {
+          customerEmailDisplay.textContent = customerEmail;
+        }
+
+        // Show guest-specific next steps
+        nextSteps.style.display = 'none';
+        nextStepsGuest.style.display = 'block';
         openExtensionBtn.style.display = 'inline-block';
         openExtensionBtn.textContent = 'Install Extension';
         openExtensionBtn.href = 'https://chrome.google.com/webstore/detail/monkey-block/ggccjkdgmlclpigflghjjkgeblgdgffe';
 
         trackEvent('Checkout Success Extension Not Found', {
           checkout_id: checkoutId,
+          customer_email: customerEmail,
+          page: 'checkout_success_website'
+        });
+      }
+
+      /**
+       * Show guest checkout with extension installed (Fall 3)
+       * Extension is installed but user doesn't have an account yet
+       * They'll receive a magic link email to create their account
+       */
+      function showGuestWithExtension() {
+        setStatus('success', '✓ Almost done! Check your email to complete setup');
+        guestCheckoutNotice.style.display = 'block';
+        extensionNotice.style.display = 'none';
+
+        // Display customer email if available
+        if (customerEmail) {
+          customerEmailDisplay.textContent = customerEmail;
+        }
+
+        // Show simplified next steps (they already have extension)
+        nextSteps.style.display = 'none';
+        nextStepsGuest.style.display = 'block';
+
+        // Hide install button since extension is already installed
+        openExtensionBtn.style.display = 'inline-block';
+        openExtensionBtn.textContent = 'Open Extension';
+        openExtensionBtn.href = `chrome-extension://${EXTENSION_ID}/dashboard.html`;
+
+        trackEvent('Checkout Success Guest With Extension', {
+          checkout_id: checkoutId,
+          customer_email: customerEmail,
           page: 'checkout_success_website'
         });
       }
