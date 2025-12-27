@@ -540,11 +540,17 @@
     </p>
   </div>
 
+  <!-- Extension ID Configuration -->
+  <script src="/config/extension-ids.js"></script>
+
   <script>
     (function() {
       'use strict';
 
-      const EXTENSION_ID = 'ggccjkdgmlclpigflghjjkgeblgdgffe'; // Your extension ID
+      // Auto-detect dev vs production extension ID
+      const EXTENSION_ID = window.ExtensionConfig ? window.ExtensionConfig.EXTENSION_ID : 'ggccjkdgmlclpigflghjjkgeblgdgffe';
+
+      console.log('[Checkout] Using Extension ID:', EXTENSION_ID, window.ExtensionConfig?.IS_DEV ? '(DEV)' : '(PROD)');
 
       // DOM Elements
       const statusMessage = document.getElementById('status-message');
