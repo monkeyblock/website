@@ -19,6 +19,16 @@ function isDevEnvironment() {
   // In development (unpacked), the ID changes
   // We can detect this by checking if we're in a packed extension
 
+  // Method 0: Check for debug flag in URL (for website testing)
+  // Usage: ?debug=dev in URL to force dev mode
+  if (typeof window !== 'undefined' && window.location) {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('debug') === 'dev') {
+      console.log('[ExtensionConfig] Debug mode: Forcing DEV environment');
+      return true;
+    }
+  }
+
   // Method 1: Check if running from unpacked extension
   // Unpacked extensions have 'Temp' in their path
   if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest) {
@@ -31,6 +41,15 @@ function isDevEnvironment() {
   if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id) {
     // If current ID matches dev ID, we're in dev
     return chrome.runtime.id === DEV_EXTENSION_ID;
+  }
+
+  // Method 3: Check if running on localhost (for website testing)
+  if (typeof window !== 'undefined' && window.location) {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.local')) {
+      console.log('[ExtensionConfig] Detected localhost, using DEV environment');
+      return true;
+    }
   }
 
   // Default to production for safety
